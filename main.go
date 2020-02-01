@@ -13,7 +13,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var frases = []string{
+var data = []string{
 	"Saca pecho",
 	"Si te lo llevas me voy afk",
 	"ff 15",
@@ -89,12 +89,12 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	if m.Content == "!frases" {
 		var msg string
-		for _, frase := range frases {
+		for _, frase := range data {
 			msg += frase
 			msg += "\n"
 		}
 		s.ChannelMessageSend(m.ChannelID, msg)
 		return
 	}
-	s.ChannelMessageSend(m.ChannelID, frases[rand.Intn(len(frases))])
+	s.ChannelMessageSend(m.ChannelID, data[rand.Intn(len(data))])
 }
