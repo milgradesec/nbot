@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  nbot:
+    image: milgradesec/nbot:latest
+    command: -t NjcxNDY5MzgxNTk4OTY5ODY2.Xi9YpA.g2G_LUwfSgtA6J9QBLV4SnKjuTg
+    deploy:
+      restart_policy:
+        condition: on-failure

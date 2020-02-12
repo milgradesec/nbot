@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -52,6 +53,8 @@ var data = []string{
 	"Pues voy a martillearme la polla",
 	"Venid que puedo contra todos",
 	"Top daño de la partida",
+	"Es worth ya no tiene flash",
+	"Play around the caja",
 }
 
 var (
@@ -96,5 +99,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, msg)
 		return
 	}
-	s.ChannelMessageSend(m.ChannelID, data[rand.Intn(len(data))])
+	if strings.Contains(m.Content, "nbot") {
+		s.ChannelMessageSend(m.ChannelID, data[rand.Intn(len(data))])
+	}
 }
