@@ -10,7 +10,7 @@ all: build
 
 .PHONY: build
 build:
-	CGO_ENABLED=$(CGO_ENABLED) $(SYSTEM) go build $(BUILDFLAGS)
+	CGO_ENABLED=$(CGO_ENABLED) $(SYSTEM) go build $(BUILDFLAGS) $(IMPORT_PATH)/cmd/nbot
 
 .PHONY: clean
 clean:
