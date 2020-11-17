@@ -57,6 +57,8 @@ var data = []string{
 	"Play around the caja",
 	"Deja de jugar flex como un bot",
 	"Problemas",
+	"Eres la persona más egoísta que conozco",
+	"Yo me ducho todos los días, bueno hoy no",
 }
 
 var (
