@@ -56,7 +56,7 @@ var data = []string{
 	"Es worth ya no tiene flash",
 	"Play around the caja",
 	"Deja de jugar flex como un bot",
-	"Problemas",
+	"Problemas", //nolint
 	"Eres la persona más egoísta que conozco",
 	"Yo me ducho todos los días, bueno hoy no",
 }
@@ -100,10 +100,10 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			msg += frase
 			msg += "\n"
 		}
-		s.ChannelMessageSend(m.ChannelID, msg)
+		s.ChannelMessageSend(m.ChannelID, msg) //nolint
 		return
 	}
 	if strings.Contains(m.Content, "nbot") {
-		s.ChannelMessageSend(m.ChannelID, data[rand.Intn(len(data))])
+		s.ChannelMessageSend(m.ChannelID, data[rand.Intn(len(data))]) //nolint
 	}
 }
