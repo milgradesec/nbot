@@ -65,6 +65,8 @@ var data = []string{
 	"Estoy oneshoteando al Nautilus",
 	"De verdad me solea una Leona support?",
 	"Claro genios",
+	"Estamos en la winners queue",
+	"Menudo carreo te estoy metiendo",
 }
 
 var (
