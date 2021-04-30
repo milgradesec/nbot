@@ -59,6 +59,12 @@ var data = []string{
 	"Problemas", //nolint
 	"Eres la persona más egoísta que conozco",
 	"Yo me ducho todos los días, bueno hoy no",
+	"Caduco",
+	"Trilero",
+	"Doble moonstone, doble moonstone",
+	"Estoy oneshoteando al Nautilus",
+	"De verdad me solea una Leona support?",
+	"Claro genios",
 }
 
 var (
