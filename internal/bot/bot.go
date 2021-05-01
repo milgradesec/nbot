@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/bwmarrin/discordgo"
