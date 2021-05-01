@@ -20,6 +20,5 @@ func main() {
 }
 
 var (
-	// Version set by buildsystem.
 	Version string //nolint
 )
