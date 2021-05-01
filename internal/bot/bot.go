@@ -2,15 +2,15 @@ package bot
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -39,7 +39,7 @@ func (bot *Bot) Run() {
 		log.Fatalf("error opening connection: %v", err)
 	}
 
-	fmt.Println("Bot is running.  Press CTRL-C to exit.")
+	log.Infoln("Bot is running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
@@ -64,7 +64,7 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 		}
 		_, err := s.ChannelMessageSend(m.ChannelID, msg)
 		if err != nil {
-			log.Printf("error: failed to send message; %v", err)
+			log.Errorf("error: failed to send message; %v\n", err)
 		}
 		return
 	}
@@ -72,7 +72,7 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 	if strings.Contains(m.Content, "nbot") {
 		_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
 		if err != nil {
-			log.Printf("error: failed to send message; %v", err)
+			log.Errorf("error: failed to send message; %v\n", err)
 		}
 	}
 }
