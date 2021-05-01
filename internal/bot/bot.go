@@ -21,13 +21,18 @@ type Bot struct {
 }
 
 func (bot *Bot) Run() {
+	rand.Seed(time.Now().Unix())
+
 	session, err := discordgo.New("Bot " + bot.Token)
 	if err != nil {
 		log.Fatalf("error creating Discord session: %v", err)
 	}
-
-	rand.Seed(time.Now().Unix())
 	session.AddHandler(bot.messageHandler)
+
+	err = bot.loadQuotes()
+	if err != nil {
+		log.Fatalf("error: failed to load quotes from quotes.json: %v", err)
+	}
 
 	err = session.Open()
 	if err != nil {
