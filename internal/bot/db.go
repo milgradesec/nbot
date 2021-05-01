@@ -29,7 +29,7 @@ func (bot *Bot) openDB() error {
 		return errors.New("POSTGRES_DB_PASSWORD env variable not set")
 	}
 
-	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName
+	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=disable"
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {

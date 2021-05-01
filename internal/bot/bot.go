@@ -57,6 +57,16 @@ func (bot *Bot) Run() {
 }
 
 func (bot *Bot) getRandomQuote() string {
+	row := bot.db.QueryRow("SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1")
+
+	var name string
+	if err := row.Scan(&name); err != nil {
+		log.Error(err)
+	}
+
+	if err := row.Err(); err != nil {
+		log.Errorf("error: failed to query db: %v\n", err)
+	}
 	return bot.quotes[rand.Intn(len(bot.quotes))] //nolint
 }
 
