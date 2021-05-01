@@ -4,7 +4,7 @@ services:
   nbot:
     image: milgradesec/nbot:latest
     read_only: true
-    networks: 
+    networks:
       - db_network
     environment:
       - DISCORD_BOT_TOKEN_FILE=/run/secrets/nbot_discord_token
