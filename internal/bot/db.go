@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"os"
+
+	_ "github.com/lib/pq" // psql driver
 )
 
 func (bot *Bot) openDB() error {
@@ -35,6 +37,11 @@ func (bot *Bot) openDB() error {
 	}
 	db.SetMaxOpenConns(3)
 	db.SetMaxIdleConns(2)
+
+	err = db.Ping()
+	if err != nil {
+		return err
+	}
 
 	bot.db = db
 	return nil

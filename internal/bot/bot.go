@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	_ "github.com/lib/pq"
+	_ "github.com/lib/pq" // psql driver
 	log "github.com/sirupsen/logrus"
 
 	"github.com/bwmarrin/discordgo"
