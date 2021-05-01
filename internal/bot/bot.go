@@ -67,7 +67,7 @@ func (bot *Bot) getRandomQuote() string {
 	if err := row.Err(); err != nil {
 		log.Errorf("error: failed to query db: %v\n", err)
 	}
-	return bot.quotes[rand.Intn(len(bot.quotes))] //nolint
+	return name
 }
 
 func (bot *Bot) getAllQuotes() string {
