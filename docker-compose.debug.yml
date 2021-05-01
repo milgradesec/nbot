@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  nbot:
+    image: nbot
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file: ./test/env
