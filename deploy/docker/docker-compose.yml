@@ -6,12 +6,13 @@ services:
     read_only: true
     environment:
       - DISCORD_BOT_TOKEN_FILE=/run/secrets/nbot_discord_token
-      - POSTGRES_HOST=postgres_db:5432
+      - POSTGRES_HOST=psql_db:5432
       - POSTGRES_DB=nbot
       - POSTGRES_USER=nbot
-      - POSTGRES_PASSWORD=XXXXXXXXXX
+      - POSTGRES_DB_PASSWORD_FILE=/run/secrets/nbot_db_password
     secrets:
       - nbot_discord_token
+      - nbot_db_password
     logging:
       options:
         max-size: 1MB
@@ -25,6 +26,8 @@ services:
 
 secrets:
   nbot_discord_token:
+    external: true
+  nbot_db_password:
     external: true
 
 networks:
