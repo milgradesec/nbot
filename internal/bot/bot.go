@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"database/sql"
 	"encoding/json"
 	"io/ioutil"
 	"math/rand"
@@ -16,8 +17,10 @@ import (
 )
 
 type Bot struct {
-	Token  string
+	Token string
+
 	quotes []string
+	db     *sql.DB
 }
 
 func (bot *Bot) Run() {
@@ -51,18 +54,22 @@ func (bot *Bot) getRandomQuote() string {
 	return bot.quotes[rand.Intn(len(bot.quotes))] //nolint
 }
 
+func (bot *Bot) getAllQuotes() string {
+	var msg string
+	for _, frase := range bot.quotes {
+		msg += frase
+		msg += "\n"
+	}
+	return msg
+}
+
 func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
 
 	if m.Content == "!frases" {
-		var msg string
-		for _, frase := range bot.quotes {
-			msg += frase
-			msg += "\n"
-		}
-		_, err := s.ChannelMessageSend(m.ChannelID, msg)
+		_, err := s.ChannelMessageSend(m.ChannelID, bot.getAllQuotes())
 		if err != nil {
 			log.Errorf("error: failed to send message; %v\n", err)
 		}
