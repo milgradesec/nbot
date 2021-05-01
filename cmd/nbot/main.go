@@ -18,3 +18,8 @@ func main() {
 	}
 	bot.Run()
 }
+
+var (
+	// Version set by buildsystem.
+	Version string //nolint
+)
