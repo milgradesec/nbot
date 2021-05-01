@@ -2,8 +2,6 @@ package bot
 
 import (
 	"database/sql"
-	"encoding/json"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -20,8 +18,7 @@ import (
 type Bot struct {
 	Token string
 
-	quotes []string
-	db     *sql.DB
+	db *sql.DB
 }
 
 func (bot *Bot) Run() {
@@ -36,11 +33,6 @@ func (bot *Bot) Run() {
 	err = bot.openDB()
 	if err != nil {
 		log.Fatalf("error: failed to connect to db: %v", err)
-	}
-
-	err = bot.loadQuotes()
-	if err != nil {
-		log.Fatalf("error: failed to load quotes from quotes.json: %v", err)
 	}
 
 	err = session.Open()
@@ -71,12 +63,12 @@ func (bot *Bot) getRandomQuote() string {
 }
 
 func (bot *Bot) getAllQuotes() string {
-	var msg string
+	/*var msg string
 	for _, frase := range bot.quotes {
 		msg += frase
 		msg += "\n"
-	}
-	return msg
+	}*/
+	return "Si no quiero no respondo :)"
 }
 
 func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -98,24 +90,4 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 			log.Errorf("error: failed to send message; %v\n", err)
 		}
 	}
-}
-
-type Quotes struct {
-	Quotes []string
-}
-
-func (bot *Bot) loadQuotes() error {
-	content, err := ioutil.ReadFile("../../quotes.json")
-	if err != nil {
-		return err
-	}
-
-	var payload Quotes
-	err = json.Unmarshal(content, &payload)
-	if err != nil {
-		return err
-	}
-
-	bot.quotes = payload.Quotes
-	return nil
 }
