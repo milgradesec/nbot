@@ -32,6 +32,11 @@ func (bot *Bot) Run() {
 	}
 	session.AddHandler(bot.messageHandler)
 
+	err = bot.openDB()
+	if err != nil {
+		log.Fatalf("error: failed to connect to db: %v", err)
+	}
+
 	err = bot.loadQuotes()
 	if err != nil {
 		log.Fatalf("error: failed to load quotes from quotes.json: %v", err)
