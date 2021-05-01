@@ -1,9 +1,24 @@
-version: "3.7"
+version: "3.8"
 
 services:
   nbot:
     image: milgradesec/nbot:latest
-    command: -t TOKEN
+    read_only: true
+    environment:
+      - DISCORD_BOT_TOKEN_FILE=/run/secrets/nbot_discord_token
+    secrets:
+      - nbot_discord_token
+    logging:
+      options:
+        max-size: 1MB
+    cap_drop:
+      - ALL
     deploy:
       restart_policy:
         condition: on-failure
+        delay: 5s
+        max_attempts: 5
+
+secrets:
+  nbot_discord_token:
+    external: true

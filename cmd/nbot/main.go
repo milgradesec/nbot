@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"math/rand"
@@ -12,6 +11,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/milgradesec/nbot/internal/config"
 )
 
 var data = []string{
@@ -69,13 +69,11 @@ var data = []string{
 	"Menudo carreo te estoy metiendo",
 }
 
-var (
-	token string
-)
-
 func main() {
-	flag.StringVar(&token, "t", "", "Bot Token")
-	flag.Parse()
+	token, found := config.GetToken()
+	if !found {
+		log.Fatal("error: Bot token not found")
+	}
 
 	session, err := discordgo.New("Bot " + token)
 	if err != nil {
@@ -102,6 +100,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
+
 	if m.Content == "!frases" {
 		var msg string
 		for _, frase := range data {
@@ -111,6 +110,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, msg) //nolint
 		return
 	}
+
 	if strings.Contains(m.Content, "nbot") {
 		s.ChannelMessageSend(m.ChannelID, data[rand.Intn(len(data))]) //nolint
 	}
