@@ -42,6 +42,10 @@ func (bot *Bot) Run() {
 	session.Close()
 }
 
+func (bot *Bot) getRandomQuote() string {
+	return bot.quotes[rand.Intn(len(bot.quotes))] //nolint
+}
+
 func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
@@ -61,7 +65,7 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 	}
 
 	if strings.Contains(m.Content, "nbot") {
-		_, err := s.ChannelMessageSend(m.ChannelID, bot.quotes[rand.Intn(len(bot.quotes))])
+		_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
 		if err != nil {
 			log.Printf("error: failed to send message; %v", err)
 		}
