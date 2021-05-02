@@ -17,8 +17,10 @@ func main() {
 		Token: token,
 	}
 	bot.Run()
+
+	log.Infoln("NBOT-" + Version + "is running.")
 }
 
 var (
-	Version string //nolint
+	Version string
 )

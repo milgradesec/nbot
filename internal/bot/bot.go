@@ -40,7 +40,6 @@ func (bot *Bot) Run() {
 		log.Fatalf("error opening connection: %v", err)
 	}
 
-	log.Infoln("Bot is running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
@@ -100,7 +99,7 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 	if m.Content == "!frases" {
 		_, err := s.ChannelMessageSend(m.ChannelID, bot.getAllQuotes())
 		if err != nil {
-			log.Errorf("error: failed to send message; %v\n", err)
+			log.Errorf("error: failed to send message: %v\n", err)
 		}
 		return
 	}
@@ -108,7 +107,7 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 	if strings.Contains(m.Content, "nbot") {
 		_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
 		if err != nil {
-			log.Errorf("error: failed to send message; %v\n", err)
+			log.Errorf("error: failed to send message: %v\n", err)
 		}
 	}
 }
