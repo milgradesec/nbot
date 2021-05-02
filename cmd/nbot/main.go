@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	log.Infoln("NBOT-" + Version)
+	log.Infoln("Nbot is running.")
 
 	token, found := config.GetToken()
 	if !found {
@@ -22,5 +22,5 @@ func main() {
 }
 
 var (
-	Version string
+	Version string //nolint
 )
