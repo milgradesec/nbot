@@ -17,8 +17,7 @@ import (
 
 type Bot struct {
 	Token string
-
-	db *sql.DB
+	db    *sql.DB
 }
 
 func (bot *Bot) Run() {
