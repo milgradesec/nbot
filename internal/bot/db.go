@@ -7,7 +7,7 @@ import (
 	"os"
 
 	_ "github.com/lib/pq" // psql driver
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 func (bot *Bot) openDB() error {
@@ -46,7 +46,7 @@ func (bot *Bot) openDB() error {
 		if !found {
 			return errors.New("POSTGRES_DB_PASSWORD env variable not set")
 		}
-		logrus.Warnln("Using unencrypted DB password from Env, consider switching to POSTGRES_DB_PASSWORD_FILE")
+		log.Warnln("Using unencrypted DB password from Env, consider switching to POSTGRES_DB_PASSWORD_FILE")
 	}
 
 	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=disable"
