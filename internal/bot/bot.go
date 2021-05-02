@@ -98,7 +98,14 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 		return
 	}
 
-	if m.Content == "!frases" {
+	switch m.Content {
+	case "!nbot":
+		_, err := s.ChannelMessageSend(m.ChannelID, "A su servicio")
+		if err != nil {
+			log.Errorf("error: failed to send message: %v\n", err)
+		}
+		return
+	case "!frases":
 		_, err := s.ChannelMessageSend(m.ChannelID, bot.getAllQuotes())
 		if err != nil {
 			log.Errorf("error: failed to send message: %v\n", err)
