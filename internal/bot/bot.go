@@ -11,6 +11,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq" // psql driver
+	httpc "github.com/milgradesec/go-libs/http"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/bwmarrin/discordgo"
@@ -28,6 +29,7 @@ func (bot *Bot) Run() {
 	if err != nil {
 		log.Fatalf("error creating Discord session: %v", err)
 	}
+	session.Client = httpc.NewHTTPClient()
 	session.AddHandler(bot.messageHandler)
 
 	err = bot.openDB()
