@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"context"
 	"database/sql"
 	"math/rand"
 	"os"
@@ -48,21 +49,26 @@ func (bot *Bot) Run() {
 }
 
 func (bot *Bot) getRandomQuote() string {
-	row := bot.db.QueryRow("SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-	var name string
-	if err := row.Scan(&name); err != nil {
+	row := bot.db.QueryRowContext(ctx, "SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1")
+	var quote string
+	if err := row.Scan(&quote); err != nil {
 		log.Error(err)
 	}
 
 	if err := row.Err(); err != nil {
 		log.Errorf("error: failed to handle db response: %v\n", err)
 	}
-	return name
+	return quote
 }
 
 func (bot *Bot) getAllQuotes() string {
-	rows, err := bot.db.Query("SELECT * FROM quotes")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	rows, err := bot.db.QueryContext(ctx, "SELECT * FROM quotes")
 	if err != nil {
 		log.Errorf("error: failed to query db: %v\n", err)
 	}
