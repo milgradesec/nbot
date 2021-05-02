@@ -57,18 +57,34 @@ func (bot *Bot) getRandomQuote() string {
 	}
 
 	if err := row.Err(); err != nil {
-		log.Errorf("error: failed to query db: %v\n", err)
+		log.Errorf("error: failed to handle db response: %v\n", err)
 	}
 	return name
 }
 
 func (bot *Bot) getAllQuotes() string {
-	/*var msg string
-	for _, frase := range bot.quotes {
-		msg += frase
+	rows, err := bot.db.Query("SELECT * FROM quotes")
+	if err != nil {
+		log.Errorf("error: failed to query db: %v\n", err)
+	}
+	defer rows.Close()
+
+	var msg string
+	for rows.Next() {
+		var quote string
+		err = rows.Scan(&quote)
+		if err != nil {
+			log.Errorf("error: failed to handle db response: %v\n", err)
+			break
+		}
+		msg += quote
 		msg += "\n"
-	}*/
-	return "Si no quiero no respondo :)"
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Errorf("error: failed to handle db response: %v\n", err)
+	}
+	return msg
 }
 
 func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
