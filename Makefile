@@ -15,6 +15,7 @@ build:
 .PHONY: clean
 clean:
 	go clean
+	rm nbot.exe
 
 .PHONY: test
 test:
