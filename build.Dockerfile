@@ -1,5 +1,14 @@
 FROM --platform=amd64 golang:1.16.4
 
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=${TARGETOS} \
+    GOARCH=${TARGETARCH}
+    
 WORKDIR /go/src/app
 COPY . .
 
