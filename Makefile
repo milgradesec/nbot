@@ -1,9 +1,9 @@
 
-VERSION:=$(shell git describe --tags --always --abbrev=0 --dirty="-dev")
-SYSTEM:=
-BUILDFLAGS:=-v -ldflags="-s -w -X github.com/milgradesec/nbot/cmd/nbot/main.Version=$(VERSION)"
-IMPORT_PATH:=github.com/milgradesec/nbot
-CGO_ENABLED:=0
+VERSION       :=  $(shell git describe --tags --always --abbrev=0 --dirty="-dev")
+SYSTEM        := 
+BUILDFLAGS    := -v -ldflags="-s -w -X github.com/milgradesec/nbot/cmd/nbot/main.Version=$(VERSION)"
+IMPORT_PATH   := github.com/milgradesec/nbot
+CGO_ENABLED   := 0
 
 .PHONY: all
 all: build
