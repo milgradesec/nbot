@@ -111,6 +111,12 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 			log.Errorf("error: failed to send message: %v\n", err)
 		}
 		return
+	case "!ping":
+		_, err := s.ChannelMessageSend(m.ChannelID, "PONG!")
+		if err != nil {
+			log.Errorf("error: failed to send message: %v\n", err)
+		}
+		return
 	}
 
 	if strings.Contains(m.Content, "nbot") {
