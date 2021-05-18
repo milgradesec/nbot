@@ -1,4 +1,4 @@
-package bot
+package db
 
 import (
 	"database/sql"
@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (bot *Bot) openDB() error {
+func OpenDB() (*sql.DB, error) {
 	var (
 		dbHost     string
 		dbName     string
@@ -21,30 +21,30 @@ func (bot *Bot) openDB() error {
 
 	dbHost, found = os.LookupEnv("POSTGRES_HOST")
 	if !found {
-		return errors.New("POSTGRES_HOST env variable not set")
+		return nil, errors.New("POSTGRES_HOST env variable not set")
 	}
 
 	dbName, found = os.LookupEnv("POSTGRES_DB")
 	if !found {
-		return errors.New("POSTGRES_DB env variable not set")
+		return nil, errors.New("POSTGRES_DB env variable not set")
 	}
 
 	dbUser, found = os.LookupEnv("POSTGRES_USER")
 	if !found {
-		return errors.New("POSTGRES_USER env variable not set")
+		return nil, errors.New("POSTGRES_USER env variable not set")
 	}
 
 	dbPassFile, found := os.LookupEnv("POSTGRES_DB_PASSWORD_FILE")
 	if found {
 		buf, err := ioutil.ReadFile(dbPassFile)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		dbPassword = string(buf)
 	} else {
 		dbPassword, found = os.LookupEnv("POSTGRES_DB_PASSWORD")
 		if !found {
-			return errors.New("POSTGRES_DB_PASSWORD env variable not set")
+			return nil, errors.New("POSTGRES_DB_PASSWORD env variable not set")
 		}
 		log.Warnln("Using unencrypted DB password from ENV, consider switching to POSTGRES_DB_PASSWORD_FILE")
 	}
@@ -53,16 +53,15 @@ func (bot *Bot) openDB() error {
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	db.SetMaxOpenConns(3)
 	db.SetMaxIdleConns(2)
 
 	err = db.Ping()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	bot.db = db
-	return nil
+	return db, nil
 }

@@ -15,6 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/milgradesec/nbot/internal/db"
 )
 
 type Bot struct {
@@ -33,10 +34,11 @@ func (bot *Bot) Run() {
 	session.Client = httpc.NewHTTPClient()
 	session.AddHandler(bot.messageHandler)
 
-	err = bot.openDB()
+	db, err := db.OpenDB()
 	if err != nil {
 		log.Fatalf("error: failed to connect to db: %v", err)
 	}
+	bot.db = db
 
 	err = session.Open()
 	if err != nil {
