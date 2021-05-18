@@ -7,6 +7,10 @@ import (
 	"github.com/milgradesec/nbot/internal/config"
 )
 
+var (
+	Version = "DEV"
+)
+
 func main() {
 	log.Infoln("Nbot is running.")
 
@@ -16,11 +20,8 @@ func main() {
 	}
 
 	bot := &bot.Bot{
-		Token: token,
+		Version: Version,
+		Token:   token,
 	}
 	bot.Run()
 }
-
-var (
-	Version string //nolint
-)
