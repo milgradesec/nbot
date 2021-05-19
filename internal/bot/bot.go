@@ -15,6 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/milgradesec/nbot/internal/db"
 )
 
 type Bot struct {
@@ -33,10 +34,11 @@ func (bot *Bot) Run() {
 	session.Client = httpc.NewHTTPClient()
 	session.AddHandler(bot.messageHandler)
 
-	err = bot.openDB()
+	db, err := db.OpenDB()
 	if err != nil {
 		log.Fatalf("error: failed to connect to db: %v", err)
 	}
+	bot.db = db
 
 	err = session.Open()
 	if err != nil {
@@ -120,6 +122,16 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 		return
 	case "!ping":
 		_, err := s.ChannelMessageSend(m.ChannelID, "PONG!")
+		if err != nil {
+			log.Errorf("error: failed to send message: %v\n", err)
+		}
+		return
+	case "!elo":
+		msg, err := bot.getLeagueElo("PEIN PACKER")
+		if err != nil {
+			log.Errorf("error: failed to get league data: %v\n", err)
+		}
+		_, err = s.ChannelMessageSend(m.ChannelID, msg)
 		if err != nil {
 			log.Errorf("error: failed to send message: %v\n", err)
 		}
