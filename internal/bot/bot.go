@@ -9,7 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	_ "github.com/lib/pq" // psql driver
 	httpc "github.com/milgradesec/go-libs/http"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"

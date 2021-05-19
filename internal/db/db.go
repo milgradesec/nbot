@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	_ "github.com/lib/pq" // psql driver
 	log "github.com/sirupsen/logrus"
 )
 
