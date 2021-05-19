@@ -14,8 +14,8 @@ var (
 )
 
 func main() {
-	log.Infoln("Nbot is running.")
-	log.Infof("%s %s/%s %s", Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
+	log.Infof("Nbot %s", Version)
+	log.Infof("%s/%s %s", runtime.GOOS, runtime.GOARCH, runtime.Version())
 
 	token, found := config.GetToken()
 	if !found {
