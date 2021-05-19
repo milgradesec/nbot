@@ -4,18 +4,31 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
 	"github.com/yuhanfang/riot/constants/region"
 	"github.com/yuhanfang/riot/ratelimit"
 )
 
 func (bot *Bot) getLeagueElo(name string) (string, error) {
-	apikey, found := os.LookupEnv("RIOT_APIKEY")
-	if !found {
-		return "", errors.New("RIOT_APIKEY env variable not set")
+	var apikey string
+	apikeyFile, found := os.LookupEnv("RIOT_APIKEY_FILE")
+	if found {
+		buf, err := ioutil.ReadFile(apikeyFile)
+		if err != nil {
+			return "", err
+		}
+		apikey = string(buf)
+	} else {
+		apikey, found = os.LookupEnv("RIOT_APIKEY")
+		if !found {
+			return "", errors.New("RIOT_APIKEY env variable not set")
+		}
+		log.Warnln("Using unencrypted Riot API Key from ENV, consider switching to RIOT_APIKEY_FILE")
 	}
 
 	client := apiclient.New(apikey, http.DefaultClient, ratelimit.NewLimiter())
