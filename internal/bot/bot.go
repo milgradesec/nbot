@@ -67,30 +67,67 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 
 	switch m.Content {
 	case "!nbot":
-		_, err := s.ChannelMessageSend(m.ChannelID, "A su servicio")
-		if err != nil {
-			log.Errorf("error: failed to send message: %v\n", err)
-		}
+		bot.nbotHandler(s, m)
 		return
 	case "!version":
-		_, err := s.ChannelMessageSend(m.ChannelID, bot.Version)
-		if err != nil {
-			log.Errorf("error: failed to send message: %v\n", err)
-		}
+		bot.versionHandler(s, m)
 		return
 	case "!frases":
-		_, err := s.ChannelMessageSend(m.ChannelID, bot.getAllQuotes())
-		if err != nil {
-			log.Errorf("error: failed to send message: %v\n", err)
-		}
+		bot.frasesHandler(s, m)
 		return
 	case "!ping":
-		_, err := s.ChannelMessageSend(m.ChannelID, "PONG!")
-		if err != nil {
-			log.Errorf("error: failed to send message: %v\n", err)
-		}
+		bot.pingHandler(s, m)
 		return
-	case "!elo":
+	}
+
+	if strings.HasPrefix(m.Content, "!elo") {
+		bot.eloHandler(s, m)
+		return
+	}
+
+	if strings.Contains(m.Content, "nbot") {
+		bot.fraseHandler(s, m)
+		return
+	}
+}
+
+func (bot *Bot) nbotHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	_, err := s.ChannelMessageSend(m.ChannelID, "A su servicio")
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+}
+
+func (bot *Bot) fraseHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+}
+
+func (bot *Bot) frasesHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	_, err := s.ChannelMessageSend(m.ChannelID, bot.getAllQuotes())
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+}
+
+func (bot *Bot) versionHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	_, err := s.ChannelMessageSend(m.ChannelID, bot.Version)
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+}
+
+func (bot *Bot) pingHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	_, err := s.ChannelMessageSend(m.ChannelID, "PONG!")
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+}
+
+func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if m.Content == "!elo" {
 		msg, err := bot.getLeagueElo("PEIN PACKER")
 		if err != nil {
 			log.Errorf("error: failed to get league data: %v\n", err)
@@ -102,10 +139,13 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 		return
 	}
 
-	if strings.Contains(m.Content, "nbot") {
-		_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
-		if err != nil {
-			log.Errorf("error: failed to send message: %v\n", err)
-		}
+	name := strings.TrimPrefix(m.Content, "!elo")
+	msg, err := bot.getLeagueElo(name)
+	if err != nil {
+		log.Errorf("error: failed to get league data: %v\n", err)
+	}
+	_, err = s.ChannelMessageSend(m.ChannelID, msg)
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
 	}
 }
