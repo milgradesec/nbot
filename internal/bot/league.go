@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 
 	httpc "github.com/milgradesec/go-libs/http"
 	log "github.com/sirupsen/logrus"
@@ -35,12 +36,15 @@ func newRiotAPIClient() (apiclient.Client, error) {
 }
 
 func (bot *Bot) getLeagueElo(name string) (string, error) {
-	summ, err := bot.riotapi.GetBySummonerName(context.TODO(), region.EUW1, name)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	summ, err := bot.riotapi.GetBySummonerName(ctx, region.EUW1, name)
 	if err != nil {
 		return "", err
 	}
 
-	list, err := bot.riotapi.GetAllLeaguePositionsForSummoner(context.TODO(), region.EUW1, summ.ID)
+	list, err := bot.riotapi.GetAllLeaguePositionsForSummoner(ctx, region.EUW1, summ.ID)
 	if err != nil {
 		return "", err
 	}
