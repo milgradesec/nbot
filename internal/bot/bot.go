@@ -126,6 +126,16 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 			log.Errorf("error: failed to send message: %v\n", err)
 		}
 		return
+	case "!elo":
+		msg, err := bot.getLeagueElo("PEIN PACKER")
+		if err != nil {
+			log.Errorf("error: failed to get league data: %v\n", err)
+		}
+		_, err = s.ChannelMessageSend(m.ChannelID, msg)
+		if err != nil {
+			log.Errorf("error: failed to send message: %v\n", err)
+		}
+		return
 	}
 
 	if strings.Contains(m.Content, "nbot") {
