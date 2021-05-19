@@ -5,40 +5,42 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"os"
 
+	httpc "github.com/milgradesec/go-libs/http"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
 	"github.com/yuhanfang/riot/constants/region"
 	"github.com/yuhanfang/riot/ratelimit"
 )
 
-func (bot *Bot) getLeagueElo(name string) (string, error) {
+func newRiotAPIClient() (apiclient.Client, error) {
 	var apikey string
 	apikeyFile, found := os.LookupEnv("RIOT_APIKEY_FILE")
 	if found {
 		buf, err := ioutil.ReadFile(apikeyFile)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		apikey = string(buf)
 	} else {
 		apikey, found = os.LookupEnv("RIOT_APIKEY")
 		if !found {
-			return "", errors.New("RIOT_APIKEY env variable not set")
+			return nil, errors.New("RIOT_APIKEY env variable not set")
 		}
 		log.Warnln("Using unencrypted Riot API Key from ENV, consider switching to RIOT_APIKEY_FILE")
 	}
 
-	client := apiclient.New(apikey, http.DefaultClient, ratelimit.NewLimiter())
+	return apiclient.New(apikey, httpc.NewHTTPClient(), ratelimit.NewLimiter()), nil
+}
 
-	summ, err := client.GetBySummonerName(context.TODO(), region.EUW1, name)
+func (bot *Bot) getLeagueElo(name string) (string, error) {
+	summ, err := bot.riotapi.GetBySummonerName(context.TODO(), region.EUW1, name)
 	if err != nil {
 		return "", err
 	}
 
-	list, err := client.GetAllLeaguePositionsForSummoner(context.TODO(), region.EUW1, summ.ID)
+	list, err := bot.riotapi.GetAllLeaguePositionsForSummoner(context.TODO(), region.EUW1, summ.ID)
 	if err != nil {
 		return "", err
 	}

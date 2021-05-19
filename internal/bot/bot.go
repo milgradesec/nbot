@@ -12,6 +12,7 @@ import (
 	_ "github.com/lib/pq" // psql driver
 	httpc "github.com/milgradesec/go-libs/http"
 	log "github.com/sirupsen/logrus"
+	"github.com/yuhanfang/riot/apiclient"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/milgradesec/nbot/internal/db"
@@ -20,7 +21,9 @@ import (
 type Bot struct {
 	Version string
 	Token   string
+
 	db      *sql.DB
+	riotapi apiclient.Client
 }
 
 func (bot *Bot) Run() {
@@ -38,6 +41,12 @@ func (bot *Bot) Run() {
 		log.Fatalf("error: failed to connect to db: %v", err)
 	}
 	bot.db = db
+
+	riotapi, err := newRiotAPIClient()
+	if err != nil {
+		log.Fatalf("error: failed to create Riot API Client: %v", err)
+	}
+	bot.riotapi = riotapi
 
 	err = session.Open()
 	if err != nil {
