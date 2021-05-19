@@ -1,6 +1,8 @@
 package main
 
 import (
+	"runtime"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/milgradesec/nbot/internal/bot"
@@ -13,6 +15,7 @@ var (
 
 func main() {
 	log.Infoln("Nbot is running.")
+	log.Infof("%s %s/%s %s", Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
 
 	token, found := config.GetToken()
 	if !found {
