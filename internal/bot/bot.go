@@ -81,6 +81,9 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 	case "!fact":
 		bot.factHandler(s, m)
 		return
+	case "!joke":
+		bot.jokeHandler(s, m)
+		return
 	}
 
 	if strings.HasPrefix(m.Content, "!elo") {
@@ -131,6 +134,13 @@ func (bot *Bot) pingHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func (bot *Bot) factHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomFact())
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+}
+
+func (bot *Bot) jokeHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomJoke())
 	if err != nil {
 		log.Errorf("error: failed to send message: %v\n", err)
 	}
