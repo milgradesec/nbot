@@ -16,7 +16,7 @@ func main() {
 
 	token, found := config.GetToken()
 	if !found {
-		log.Fatal("error: Bot token not found")
+		log.Fatal("error: Discord token not found")
 	}
 
 	bot := &bot.Bot{
