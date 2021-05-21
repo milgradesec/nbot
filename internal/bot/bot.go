@@ -33,8 +33,6 @@ func (bot *Bot) Run() {
 	if err != nil {
 		log.Fatalf("error creating Discord session: %v", err)
 	}
-	defer session.Close()
-
 	session.Client = httpc.NewHTTPClient()
 	session.AddHandler(bot.messageHandler)
 
@@ -58,6 +56,8 @@ func (bot *Bot) Run() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
+
+	session.Close()
 }
 
 func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
