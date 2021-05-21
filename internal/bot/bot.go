@@ -151,6 +151,7 @@ func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		msg, err := bot.getLeagueElo("PEIN PACKER")
 		if err != nil {
 			log.Errorf("error: failed to get league data: %v\n", err)
+			return
 		}
 		_, err = s.ChannelMessageSend(m.ChannelID, msg)
 		if err != nil {
@@ -163,6 +164,7 @@ func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	msg, err := bot.getLeagueElo(name)
 	if err != nil {
 		log.Errorf("error: failed to get league data: %v\n", err)
+		return
 	}
 	_, err = s.ChannelMessageSend(m.ChannelID, msg)
 	if err != nil {
