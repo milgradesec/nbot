@@ -51,7 +51,9 @@ func (bot *Bot) getLeagueElo(name string) (string, error) {
 
 	for _, league := range list {
 		if league.QueueType == "RANKED_SOLO_5x5" {
-			return fmt.Sprintf("%s %s %s %d LPs\n", name, league.Tier, league.Rank, league.LeaguePoints), nil
+			wr := float64(league.Wins) / float64(league.Wins+league.Losses) * 100
+			return fmt.Sprintf("%s %s %s %d LPs -- %dW/%dL %.2f%% WR\n", name, league.Tier, league.Rank,
+				league.LeaguePoints, league.Wins, league.Losses, wr), nil
 		}
 	}
 	return "", nil
