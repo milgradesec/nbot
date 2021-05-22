@@ -91,6 +91,11 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 		return
 	}
 
+	if strings.HasPrefix(m.Content, "!qr") {
+		bot.qrHandler(s, m)
+		return
+	}
+
 	if strings.Contains(m.Content, "nbot") {
 		bot.fraseHandler(s, m)
 		return
@@ -141,6 +146,28 @@ func (bot *Bot) factHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func (bot *Bot) jokeHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomJoke())
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+}
+
+func (bot *Bot) qrHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	msg := strings.TrimPrefix(m.Content, "!qr")
+
+	url, err := bot.getQRCodeURL(msg)
+	if err != nil {
+		log.Errorf("error: failed to get QR code from message '%s': %v", msg, err)
+	}
+
+	_, err = s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+		Title: "Toma QR",
+
+		Image: &discordgo.MessageEmbedImage{
+			URL:    url,
+			Width:  400,
+			Height: 400,
+		},
+	})
 	if err != nil {
 		log.Errorf("error: failed to send message: %v\n", err)
 	}
