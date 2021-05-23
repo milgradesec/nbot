@@ -181,10 +181,6 @@ func (bot *Bot) ptHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if err != nil {
 		log.Errorf("error: failed to send message: %v\n", err)
 	}
-
-	if err != nil {
-		log.Errorf("error: failed to send message: %v\n", err)
-	}
 }
 
 func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
