@@ -180,7 +180,9 @@ func (bot *Bot) ptHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	_, err := s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Title: "Soy Putero",
 		Video: &discordgo.MessageEmbedVideo{
-			URL: "https://streamable.com/zjms4y",
+			URL:    "https://streamable.com/zjms4y",
+			Width:  400,
+			Height: 400,
 		},
 	})
 	if err != nil {
