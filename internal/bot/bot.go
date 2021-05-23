@@ -84,6 +84,9 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 	case "!joke":
 		bot.jokeHandler(s, m)
 		return
+	case "!putero":
+		bot.ptHandler(s, m)
+		return
 	}
 
 	if strings.HasPrefix(m.Content, "!elo") {
@@ -166,6 +169,18 @@ func (bot *Bot) qrHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			URL:    url,
 			Width:  400,
 			Height: 400,
+		},
+	})
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+}
+
+func (bot *Bot) ptHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	_, err := s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+		Title: "Soy Putero",
+		Video: &discordgo.MessageEmbedVideo{
+			URL: "https://streamable.com/zjms4y",
 		},
 	})
 	if err != nil {
