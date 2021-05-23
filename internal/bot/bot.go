@@ -177,14 +177,11 @@ func (bot *Bot) qrHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func (bot *Bot) ptHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
-		Title: "Soy Putero",
-		Video: &discordgo.MessageEmbedVideo{
-			URL:    "https://s3.paesa.es/nbot-data/clips/putero.mp4?Content-Disposition=attachment%3B%20filename%3D%22clips%2Fputero.mp4%22&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=4E93nyrmHS3WzURmVzb%2F20210523%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20210523T223531Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=2b60adfd4d4c9c02997f249bd21b3a1fdecff6cb3d8d7e2ecac76850f6269bcf",
-			Width:  400,
-			Height: 400,
-		},
-	})
+	_, err := s.ChannelMessageSend(m.ChannelID, "https://s3.paesa.es/nbot-data/clips/putero.mp4")
+	if err != nil {
+		log.Errorf("error: failed to send message: %v\n", err)
+	}
+
 	if err != nil {
 		log.Errorf("error: failed to send message: %v\n", err)
 	}
