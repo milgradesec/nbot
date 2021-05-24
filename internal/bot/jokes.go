@@ -24,7 +24,7 @@ func (bot *Bot) getRandomJoke() string {
 	}
 	req.Header.Add("Accept", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := bot.client.Do(req)
 	if err != nil {
 		return err.Error()
 	}

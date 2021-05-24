@@ -3,6 +3,7 @@ package bot
 import (
 	"database/sql"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -11,6 +12,7 @@ import (
 
 	_ "github.com/lib/pq" // psql driver
 	httpc "github.com/milgradesec/go-libs/http"
+	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
 
@@ -23,6 +25,8 @@ type Bot struct {
 	Token   string
 
 	db      *sql.DB
+	s3      *minio.Client
+	client  *http.Client
 	riotapi apiclient.Client
 }
 
@@ -31,7 +35,7 @@ func (bot *Bot) Run() {
 
 	session, err := discordgo.New("Bot " + bot.Token)
 	if err != nil {
-		log.Fatalf("error creating Discord session: %v", err)
+		log.Fatalf("error creating discord session: %v", err)
 	}
 	session.Client = httpc.NewHTTPClient()
 	session.AddHandler(bot.messageHandler)
@@ -42,9 +46,17 @@ func (bot *Bot) Run() {
 	}
 	bot.db = db
 
+	s3client, err := newS3Client()
+	if err != nil {
+		log.Fatalf("error: failed to create s3 client")
+	}
+	bot.s3 = s3client
+
+	bot.client = httpc.NewHTTPClient()
+
 	riotapi, err := newRiotAPIClient()
 	if err != nil {
-		log.Fatalf("error: failed to create Riot API Client: %v", err)
+		log.Fatalf("error: failed to create riot api client: %v", err)
 	}
 	bot.riotapi = riotapi
 
@@ -86,6 +98,8 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 		return
 	case "!putero":
 		bot.ptHandler(s, m)
+		return
+	case "!meme":
 		return
 	}
 
@@ -207,4 +221,7 @@ func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if err != nil {
 		log.Errorf("error: failed to send message: %v\n", err)
 	}
+}
+
+func (bot *Bot) memeHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 }

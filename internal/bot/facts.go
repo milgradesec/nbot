@@ -23,7 +23,7 @@ func (bot *Bot) getRandomFact() string {
 		return err.Error()
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := bot.client.Do(req)
 	if err != nil {
 		return err.Error()
 	}
