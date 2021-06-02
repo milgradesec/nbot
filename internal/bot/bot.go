@@ -99,6 +99,9 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 	case "!putero":
 		bot.ptHandler(s, m)
 		return
+	case "!gafas":
+		bot.gafasHandler(s, m)
+		return
 	case "!meme":
 		return
 	}
@@ -181,6 +184,34 @@ func (bot *Bot) qrHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		Image: &discordgo.MessageEmbedImage{
 			URL:    url,
+			Width:  400,
+			Height: 400,
+		},
+	})
+	if err != nil {
+		log.Errorf("error: failed to send message: %v", err)
+	}
+}
+
+func (bot *Bot) gafasHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	_, err := s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+		Title: "Con Gafas",
+
+		Image: &discordgo.MessageEmbedImage{
+			URL:    "https://s3.paesa.es/nbot-data/img/congafas.png",
+			Width:  400,
+			Height: 400,
+		},
+	})
+	if err != nil {
+		log.Errorf("error: failed to send message: %v", err)
+	}
+
+	_, err = s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+		Title: "Sin Gafas",
+
+		Image: &discordgo.MessageEmbedImage{
+			URL:    "https://s3.paesa.es/nbot-data/img/singafas.png",
 			Width:  400,
 			Height: 400,
 		},
