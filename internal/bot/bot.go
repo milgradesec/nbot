@@ -46,11 +46,11 @@ func (bot *Bot) Run() {
 	}
 	bot.db = db
 
-	/*s3client, err := newS3Client()
+	s3client, err := newS3Client()
 	if err != nil {
 		log.Fatalf("error: failed to create s3 client")
 	}
-	bot.s3 = s3client*/
+	bot.s3 = s3client
 
 	bot.client = httpc.NewHTTPClient()
 
