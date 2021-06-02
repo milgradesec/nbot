@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   nbot:
-    image: milgradesec/nbot:latest
+    image: ghcr.io/milgradesec/nbot:latest
     read_only: true
     networks:
       - db_network
