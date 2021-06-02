@@ -12,7 +12,6 @@ import (
 
 	_ "github.com/lib/pq" // psql driver
 	httpc "github.com/milgradesec/go-libs/http"
-	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
 
@@ -25,7 +24,6 @@ type Bot struct {
 	Token   string
 
 	db      *sql.DB
-	s3      *minio.Client
 	client  *http.Client
 	riotapi apiclient.Client
 }
@@ -45,12 +43,6 @@ func (bot *Bot) Run() {
 		log.Fatalf("error: failed to connect to db: %v", err)
 	}
 	bot.db = db
-
-	/*s3client, err := newS3Client()
-	if err != nil {
-		log.Fatalf("error: failed to create s3 client")
-	}
-	bot.s3 = s3client*/
 
 	bot.client = httpc.NewHTTPClient()
 
@@ -101,8 +93,6 @@ func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate)
 		return
 	case "!gafas":
 		bot.gafasHandler(s, m)
-		return
-	case "!meme":
 		return
 	}
 
@@ -252,7 +242,4 @@ func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if err != nil {
 		log.Errorf("error: failed to send message: %v", err)
 	}
-}
-
-func (bot *Bot) memeHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
