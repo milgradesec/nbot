@@ -18,3 +18,4 @@
 .env
 
 internal/bot/bot_test.go
+target/golist.json
