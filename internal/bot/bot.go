@@ -100,6 +100,11 @@ func (bot *Bot) Run() { //nolint
 		IgnoreCase: true,
 		Handler:    bot.eloHandler,
 	})
+	router.RegisterCmd(&dgc.Command{
+		Name:       "minita",
+		IgnoreCase: true,
+		Handler:    bot.minitaHandler,
+	})
 	router.Initialize(session)
 
 	db, err := db.OpenDB()
@@ -121,6 +126,8 @@ func (bot *Bot) Run() { //nolint
 		log.Fatalf("error: failed to create riot api client: %v", err)
 	}
 	bot.riotapi = riotapi
+
+	loadMinitasKeys(bot.s3)
 
 	err = session.Open()
 	if err != nil {
