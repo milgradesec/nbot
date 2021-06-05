@@ -4,8 +4,17 @@ import (
 	"context"
 	"time"
 
+	"github.com/lus/dgc"
 	log "github.com/sirupsen/logrus"
 )
+
+func (bot *Bot) fraseHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.getRandomQuote()) //nolint
+}
+
+func (bot *Bot) frasesHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.getAllQuotes()) //nolint
+}
 
 func (bot *Bot) getRandomQuote() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
