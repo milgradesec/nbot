@@ -126,14 +126,6 @@ func (bot *Bot) Run() { //nolint
 	session.Close()
 }
 
-func (bot *Bot) fraseHandler(ctx *dgc.Ctx) {
-	ctx.RespondText(bot.getRandomQuote()) //nolint
-}
-
-func (bot *Bot) frasesHandler(ctx *dgc.Ctx) {
-	ctx.RespondText(bot.getAllQuotes()) //nolint
-}
-
 func (bot *Bot) versionHandler(ctx *dgc.Ctx) {
 	ctx.RespondText(bot.Version) //nolint
 }
