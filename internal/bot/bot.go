@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
 	_ "github.com/lib/pq" // psql driver
+	"github.com/lus/dgc"
 	httpc "github.com/milgradesec/go-libs/http"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
@@ -36,7 +36,71 @@ func (bot *Bot) Run() {
 		log.Fatalf("error creating discord session: %v", err)
 	}
 	session.Client = httpc.NewHTTPClient()
-	session.AddHandler(bot.messageHandler)
+
+	router := dgc.Create(&dgc.Router{
+		Prefixes:         []string{"!"},
+		IgnorePrefixCase: true,
+		BotsAllowed:      false,
+		PingHandler: func(ctx *dgc.Ctx) {
+			ctx.RespondText("PONG!") //nolint
+		},
+	})
+
+	router.RegisterCmd(&dgc.Command{
+		Name:       "nbot",
+		IgnoreCase: true,
+		Handler:    bot.fraseHandler,
+	})
+
+	router.RegisterCmd(&dgc.Command{
+		Name:       "ping",
+		IgnoreCase: true,
+		Handler: func(ctx *dgc.Ctx) {
+			ctx.RespondText("PONG!") //nolint
+		},
+	})
+
+	router.RegisterCmd(&dgc.Command{
+		Name:       "frases",
+		IgnoreCase: true,
+		Handler:    bot.frasesHandler,
+	})
+	router.RegisterCmd(&dgc.Command{
+		Name:       "version",
+		IgnoreCase: true,
+		Handler:    bot.versionHandler,
+	})
+	router.RegisterCmd(&dgc.Command{
+		Name:       "fact",
+		IgnoreCase: true,
+		Handler:    bot.factHandler,
+	})
+	router.RegisterCmd(&dgc.Command{
+		Name:       "joke",
+		IgnoreCase: true,
+		Handler:    bot.jokeHandler,
+	})
+	router.RegisterCmd(&dgc.Command{
+		Name:       "qr",
+		IgnoreCase: true,
+		Handler:    bot.qrHandler,
+	})
+	router.RegisterCmd(&dgc.Command{
+		Name:       "putero",
+		IgnoreCase: true,
+		Handler:    bot.ptHandler,
+	})
+	router.RegisterCmd(&dgc.Command{
+		Name:       "gafas",
+		IgnoreCase: true,
+		Handler:    bot.gafasHandler,
+	})
+	router.RegisterCmd(&dgc.Command{
+		Name:       "elo",
+		IgnoreCase: true,
+		Handler:    bot.eloHandler,
+	})
+	router.Initialize(session)
 
 	db, err := db.OpenDB()
 	if err != nil {
@@ -64,127 +128,47 @@ func (bot *Bot) Run() {
 	session.Close()
 }
 
-func (bot *Bot) messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.ID == s.State.User.ID || m.Author.Bot {
-		return
-	}
-
-	switch m.Content {
-	case "!nbot":
-		bot.nbotHandler(s, m)
-		return
-	case "!version":
-		bot.versionHandler(s, m)
-		return
-	case "!frases":
-		bot.frasesHandler(s, m)
-		return
-	case "!ping":
-		bot.pingHandler(s, m)
-		return
-	case "!fact":
-		bot.factHandler(s, m)
-		return
-	case "!joke":
-		bot.jokeHandler(s, m)
-		return
-	case "!putero":
-		bot.ptHandler(s, m)
-		return
-	case "!gafas":
-		bot.gafasHandler(s, m)
-		return
-	}
-
-	if strings.HasPrefix(m.Content, "!elo") {
-		bot.eloHandler(s, m)
-		return
-	}
-
-	if strings.HasPrefix(m.Content, "!qr") {
-		bot.qrHandler(s, m)
-		return
-	}
-
-	if strings.Contains(m.Content, "nbot") {
-		bot.fraseHandler(s, m)
-		return
-	}
+func (bot *Bot) fraseHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.getRandomQuote()) //nolint
 }
 
-func (bot *Bot) nbotHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSend(m.ChannelID, "A su servicio")
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
+func (bot *Bot) frasesHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.getAllQuotes()) //nolint
 }
 
-func (bot *Bot) fraseHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
+func (bot *Bot) versionHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.Version) //nolint
 }
 
-func (bot *Bot) frasesHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSend(m.ChannelID, bot.getAllQuotes())
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
+func (bot *Bot) factHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.getRandomFact()) //nolint
 }
 
-func (bot *Bot) versionHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSend(m.ChannelID, bot.Version)
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
+func (bot *Bot) jokeHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.getRandomJoke()) //nolint
 }
 
-func (bot *Bot) pingHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSend(m.ChannelID, "PONG!")
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
-}
-
-func (bot *Bot) factHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomFact())
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
-}
-
-func (bot *Bot) jokeHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSend(m.ChannelID, bot.getRandomJoke())
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
-}
-
-func (bot *Bot) qrHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	msg := strings.TrimPrefix(m.Content, "!qr")
+func (bot *Bot) qrHandler(ctx *dgc.Ctx) {
+	args := ctx.Arguments
+	msg := args.Raw()
 
 	url, err := bot.getQRCodeURL(msg)
 	if err != nil {
 		log.Errorf("error: failed to get QR code from message '%s': %v", msg, err)
 	}
 
-	_, err = s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+	ctx.RespondEmbed(&discordgo.MessageEmbed{ //nolint
 		Title: "Toma QR",
-
 		Image: &discordgo.MessageEmbedImage{
 			URL:    url,
 			Width:  400,
 			Height: 400,
 		},
 	})
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
 }
 
-func (bot *Bot) gafasHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
+	ctx.RespondEmbed(&discordgo.MessageEmbed{ //nolint
 		Title: "Con Gafas",
 
 		Image: &discordgo.MessageEmbedImage{
@@ -193,11 +177,8 @@ func (bot *Bot) gafasHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			Height: 400,
 		},
 	})
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
 
-	_, err = s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+	ctx.RespondEmbed(&discordgo.MessageEmbed{ //nolint
 		Title: "Sin Gafas",
 
 		Image: &discordgo.MessageEmbedImage{
@@ -206,40 +187,29 @@ func (bot *Bot) gafasHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			Height: 400,
 		},
 	})
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
 }
 
-func (bot *Bot) ptHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSend(m.ChannelID, "https://s3.paesa.es/nbot-data/clips/putero.mp4")
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
-	}
+func (bot *Bot) ptHandler(ctx *dgc.Ctx) {
+	ctx.RespondText("https://s3.paesa.es/nbot-data/clips/putero.mp4") //nolint
 }
 
-func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Content == "!elo" {
+func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
+	args := ctx.Arguments
+
+	if args.Amount() == 0 {
 		msg, err := bot.getLeagueElo("PEIN PACKER")
 		if err != nil {
 			log.Errorf("error: failed to get league data: %v", err)
 			return
 		}
-		_, err = s.ChannelMessageSend(m.ChannelID, msg)
+		ctx.RespondText(msg) //nolint
+	} else {
+		name := args.Raw()
+		msg, err := bot.getLeagueElo(name)
 		if err != nil {
-			log.Errorf("error: failed to send message: %v", err)
+			log.Errorf("error: failed to get league data for '%s': %v", name, err)
+			return
 		}
-		return
-	}
-
-	name := strings.TrimPrefix(m.Content, "!elo")
-	msg, err := bot.getLeagueElo(name)
-	if err != nil {
-		log.Errorf("error: failed to get league data for '%s': %v", name, err)
-		return
-	}
-	_, err = s.ChannelMessageSend(m.ChannelID, msg)
-	if err != nil {
-		log.Errorf("error: failed to send message: %v", err)
+		ctx.RespondText(msg) //nolint
 	}
 }
