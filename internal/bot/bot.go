@@ -12,7 +12,7 @@ import (
 	_ "github.com/lib/pq" // psql driver
 	"github.com/lus/dgc"
 	httpc "github.com/milgradesec/go-libs/http"
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
 
@@ -107,6 +107,12 @@ func (bot *Bot) Run() { //nolint
 		log.Fatalf("error: failed to connect to db: %v", err)
 	}
 	bot.db = db
+
+	s3client, err := newS3Client()
+	if err != nil {
+		log.Fatalf("error: failed to create s3 client")
+	}
+	bot.s3 = s3client
 
 	bot.client = httpc.NewHTTPClient()
 
