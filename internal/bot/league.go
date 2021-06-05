@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/lus/dgc"
 	httpc "github.com/milgradesec/go-libs/http"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
@@ -33,6 +34,27 @@ func newRiotAPIClient() (apiclient.Client, error) {
 	}
 
 	return apiclient.New(apikey, httpc.NewHTTPClient(), ratelimit.NewLimiter()), nil
+}
+
+func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
+	args := ctx.Arguments
+
+	if args.Amount() == 0 {
+		msg, err := bot.getLeagueElo("PEIN PACKER")
+		if err != nil {
+			log.Errorf("error: failed to get league data: %v", err)
+			return
+		}
+		ctx.RespondText(msg) //nolint
+	} else {
+		name := args.Raw()
+		msg, err := bot.getLeagueElo(name)
+		if err != nil {
+			log.Errorf("error: failed to get league data for '%s': %v", name, err)
+			return
+		}
+		ctx.RespondText(msg) //nolint
+	}
 }
 
 func (bot *Bot) getLeagueElo(name string) (string, error) {

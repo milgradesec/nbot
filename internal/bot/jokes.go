@@ -6,10 +6,16 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/lus/dgc"
 )
 
 type joke struct {
 	Joke string `json:"joke"`
+}
+
+func (bot *Bot) jokeHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.getRandomJoke()) //nolint
 }
 
 func (bot *Bot) getRandomJoke() string {

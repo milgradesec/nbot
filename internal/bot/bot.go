@@ -138,33 +138,6 @@ func (bot *Bot) versionHandler(ctx *dgc.Ctx) {
 	ctx.RespondText(bot.Version) //nolint
 }
 
-func (bot *Bot) factHandler(ctx *dgc.Ctx) {
-	ctx.RespondText(bot.getRandomFact()) //nolint
-}
-
-func (bot *Bot) jokeHandler(ctx *dgc.Ctx) {
-	ctx.RespondText(bot.getRandomJoke()) //nolint
-}
-
-func (bot *Bot) qrHandler(ctx *dgc.Ctx) {
-	args := ctx.Arguments
-	msg := args.Raw()
-
-	url, err := bot.getQRCodeURL(msg)
-	if err != nil {
-		log.Errorf("error: failed to get QR code from message '%s': %v", msg, err)
-	}
-
-	ctx.RespondEmbed(&discordgo.MessageEmbed{ //nolint
-		Title: "Toma QR",
-		Image: &discordgo.MessageEmbedImage{
-			URL:    url,
-			Width:  400,
-			Height: 400,
-		},
-	})
-}
-
 func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 	ctx.RespondEmbed(&discordgo.MessageEmbed{ //nolint
 		Title: "Con Gafas",
@@ -189,25 +162,4 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 
 func (bot *Bot) ptHandler(ctx *dgc.Ctx) {
 	ctx.RespondText("https://s3.paesa.es/nbot-data/clips/putero.mp4") //nolint
-}
-
-func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
-	args := ctx.Arguments
-
-	if args.Amount() == 0 {
-		msg, err := bot.getLeagueElo("PEIN PACKER")
-		if err != nil {
-			log.Errorf("error: failed to get league data: %v", err)
-			return
-		}
-		ctx.RespondText(msg) //nolint
-	} else {
-		name := args.Raw()
-		msg, err := bot.getLeagueElo(name)
-		if err != nil {
-			log.Errorf("error: failed to get league data for '%s': %v", name, err)
-			return
-		}
-		ctx.RespondText(msg) //nolint
-	}
 }

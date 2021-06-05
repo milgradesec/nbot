@@ -6,10 +6,16 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/lus/dgc"
 )
 
 type Fact struct {
 	Text string `json:"text"`
+}
+
+func (bot *Bot) factHandler(ctx *dgc.Ctx) {
+	ctx.RespondText(bot.getRandomFact()) //nolint
 }
 
 func (bot *Bot) getRandomFact() string {
