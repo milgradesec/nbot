@@ -51,7 +51,6 @@ func (bot *Bot) Run() {
 		IgnoreCase: true,
 		Handler:    bot.fraseHandler,
 	})
-
 	router.RegisterCmd(&dgc.Command{
 		Name:       "ping",
 		IgnoreCase: true,
@@ -59,7 +58,6 @@ func (bot *Bot) Run() {
 			ctx.RespondText("PONG!") //nolint
 		},
 	})
-
 	router.RegisterCmd(&dgc.Command{
 		Name:       "frases",
 		IgnoreCase: true,
