@@ -28,7 +28,7 @@ type Bot struct {
 	riotapi apiclient.Client
 }
 
-func (bot *Bot) Run() {
+func (bot *Bot) Run() { //nolint
 	rand.Seed(time.Now().Unix())
 
 	session, err := discordgo.New("Bot " + bot.Token)
