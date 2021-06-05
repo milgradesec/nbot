@@ -12,6 +12,7 @@ import (
 	_ "github.com/lib/pq" // psql driver
 	"github.com/lus/dgc"
 	httpc "github.com/milgradesec/go-libs/http"
+	"github.com/minio/minio-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
 
@@ -24,6 +25,7 @@ type Bot struct {
 	Token   string
 
 	db      *sql.DB
+	s3      *minio.Client
 	client  *http.Client
 	riotapi apiclient.Client
 }
