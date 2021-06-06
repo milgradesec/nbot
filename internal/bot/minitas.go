@@ -3,7 +3,7 @@ package bot
 import (
 	"bytes"
 	"context"
-	"crypto/md5"
+	"crypto/md5" //nolint
 	"encoding/hex"
 	"io"
 	"io/ioutil"
