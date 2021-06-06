@@ -121,7 +121,7 @@ func fetchImage(client *http.Client, url string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Accept", "image/png")
+	req.Header.Set("Accept", "image/png,image/jpeg")
 
 	resp, err := client.Do(req)
 	if err != nil {
