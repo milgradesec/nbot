@@ -5,9 +5,9 @@ import (
 	"context"
 	"crypto/md5" //nolint
 	"encoding/hex"
+	"errors"
 	"io"
 	"io/ioutil"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"time"
@@ -17,11 +17,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var minitasObjectKeys []string
-
 func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
-	key := pickRandomMinita()
-	ctx.RespondText("https://s3.paesa.es/nbot-data/" + key) //nolint
+	key := bot.pickRandomMinitaID()
+	ctx.RespondText("https://s3.paesa.es/nbot-data/minitas/" + key) //nolint
 }
 
 func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
@@ -36,7 +34,6 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 		ctx.RespondText("Aprendete el puto comando: !minita add URL") //nolint
 		return
 	}
-	log.Infof("addMinitaHandler called: args = %s", args.Raw())
 
 	urlArg := args.Get(0)
 	u, err := url.Parse(urlArg.Raw())
@@ -45,80 +42,107 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 		return
 	}
 
-	reqctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	req, err := http.NewRequestWithContext(reqctx, "GET", u.String(), nil)
-	if err != nil {
-		log.Error(err)
-		return
-	}
-	req.Header.Set("Accept", "image/png")
-
-	resp, err := bot.client.Do(req)
+	resp, err := fetchImage(bot.client, u.String())
 	if err != nil {
 		log.Error(err)
 		return
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		log.Errorf("http status code != 200: %s", resp.Status)
-		return
-	}
-
 	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Error(err)
+		return
 	}
-	h := computeImageMD5(buf)
-	log.Infof("Image md5: %s", h)
 
-	err = uploadMinitaIMG(bot.s3, h, bytes.NewReader(buf), int64(len(buf)))
+	h := computeMD5(buf)
+	key := addContentTypeToKey("image/png", h)
+
+	err = bot.insertMinitaID(key)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	opts := minio.PutObjectOptions{
+		ContentType: "image/png",
+	}
+	err = uploadMinitaIMG(bot.s3, key, bytes.NewReader(buf), int64(len(buf)), opts)
 	if err != nil {
 		log.Errorf("error uploading img: %v", err)
 		return
 	}
 
-	ctx.RespondText("Nueva minita añadida correctamente.\nMinita ID: " + h) //nolint
+	ctx.RespondText("Nueva minita añadida correctamente.\nMinita ID: " + key) //nolint
 }
 
-func loadMinitasKeys(client *minio.Client) {
+func (bot *Bot) pickRandomMinitaID() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	objectCh := client.ListObjects(ctx, "nbot-data", minio.ListObjectsOptions{
-		Prefix:    "img/minitas",
-		Recursive: true,
-	})
-
-	for object := range objectCh {
-		if object.Err != nil {
-			log.Errorln(object.Err)
-		}
-		minitasObjectKeys = append(minitasObjectKeys, object.Key)
+	var id string
+	row := bot.db.QueryRowContext(ctx, "SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1")
+	if err := row.Scan(&id); err != nil {
+		log.Error(err)
 	}
+
+	if err := row.Err(); err != nil {
+		log.Errorf("error: failed to handle db response: %v\n", err)
+	}
+	return id
 }
 
-func pickRandomMinita() string {
-	randomIndex := rand.Intn(len(minitasObjectKeys)) //nolint
-	return minitasObjectKeys[randomIndex]
-}
-
-func computeImageMD5(buf []byte) string {
+func computeMD5(buf []byte) string {
 	h := md5.New() //nolint
 	h.Write(buf)
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-func uploadMinitaIMG(client *minio.Client, key string, src io.Reader, size int64) error {
-	opts := minio.PutObjectOptions{
-		ContentType: "image/png",
+func addContentTypeToKey(contentType, key string) string {
+	switch contentType {
+	case "image/png":
+		return key + ".png"
+	case "image/jpeg":
+		return key + ".jpeg"
 	}
+	return key
+}
 
-	_, err := client.PutObject(context.Background(), "nbot-data", "minitas/"+key+".png", src, size, opts)
+func uploadMinitaIMG(client *minio.Client, key string, src io.Reader, size int64, opts minio.PutObjectOptions) error {
+	_, err := client.PutObject(context.Background(), "nbot-data", "minitas/"+key, src, size, opts)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func fetchImage(client *http.Client, url string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(context.Background(), "GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "image/png")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("http status code != 200: " + resp.Status)
+	}
+	return resp, nil
+}
+
+func (bot *Bot) insertMinitaID(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	rows, err := bot.db.QueryContext(ctx, `INSERT INTO minitas VALUES ($1)`, id)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
 	return nil
 }

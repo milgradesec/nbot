@@ -133,8 +133,6 @@ func (bot *Bot) Run() { //nolint
 	}
 	bot.riotapi = riotapi
 
-	loadMinitasKeys(bot.s3)
-
 	err = session.Open()
 	if err != nil {
 		log.Fatalf("error opening connection: %v", err)
