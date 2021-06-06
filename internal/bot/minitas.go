@@ -54,9 +54,14 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 		log.Error(err)
 		return
 	}
-
 	h := computeMD5(buf)
-	key := addContentTypeToKey("image/png", h)
+
+	contentType := resp.Header.Get("Content-Type")
+	if contentType == "" {
+		log.Error("error: Content-Type header not set")
+		return
+	}
+	key := addContentTypeToKey(contentType, h)
 
 	err = bot.insertMinitaID(key)
 	if err != nil {
@@ -65,9 +70,9 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 	}
 
 	opts := minio.PutObjectOptions{
-		ContentType: "image/png",
+		ContentType: contentType,
 	}
-	err = uploadMinitaIMG(bot.s3, key, bytes.NewReader(buf), int64(len(buf)), opts)
+	err = bot.uploadMinitaIMG(key, bytes.NewReader(buf), int64(len(buf)), opts)
 	if err != nil {
 		log.Errorf("error uploading img: %v", err)
 		return
@@ -81,7 +86,7 @@ func (bot *Bot) pickRandomMinitaID() string {
 	defer cancel()
 
 	var id string
-	row := bot.db.QueryRowContext(ctx, "SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1")
+	row := bot.db.QueryRowContext(ctx, `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`)
 	if err := row.Scan(&id); err != nil {
 		log.Error(err)
 	}
@@ -92,27 +97,24 @@ func (bot *Bot) pickRandomMinitaID() string {
 	return id
 }
 
-func computeMD5(buf []byte) string {
-	h := md5.New() //nolint
-	h.Write(buf)
-	return hex.EncodeToString(h.Sum(nil))
-}
-
-func addContentTypeToKey(contentType, key string) string {
-	switch contentType {
-	case "image/png":
-		return key + ".png"
-	case "image/jpeg":
-		return key + ".jpeg"
-	}
-	return key
-}
-
-func uploadMinitaIMG(client *minio.Client, key string, src io.Reader, size int64, opts minio.PutObjectOptions) error {
-	_, err := client.PutObject(context.Background(), "nbot-data", "minitas/"+key, src, size, opts)
+func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts minio.PutObjectOptions) error {
+	_, err := bot.s3.PutObject(context.Background(), "nbot-data", "minitas/"+key, src, size, opts)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (bot *Bot) insertMinitaID(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	rows, err := bot.db.QueryContext(ctx, `INSERT INTO minitas VALUES ($1)`, id)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
 	return nil
 }
 
@@ -134,15 +136,18 @@ func fetchImage(client *http.Client, url string) (*http.Response, error) {
 	return resp, nil
 }
 
-func (bot *Bot) insertMinitaID(id string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+func computeMD5(buf []byte) string {
+	h := md5.New() //nolint
+	h.Write(buf)
+	return hex.EncodeToString(h.Sum(nil))
+}
 
-	rows, err := bot.db.QueryContext(ctx, `INSERT INTO minitas VALUES ($1)`, id)
-	if err != nil {
-		return err
+func addContentTypeToKey(contentType, key string) string {
+	switch contentType {
+	case "image/png":
+		return key + ".png"
+	case "image/jpeg":
+		return key + ".jpeg"
 	}
-	defer rows.Close()
-
-	return nil
+	return key
 }
