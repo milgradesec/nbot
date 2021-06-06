@@ -1,10 +1,10 @@
 package bot
 
 import (
+	"bytes"
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -74,7 +74,13 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 	h := computeImageMD5(buf)
 	log.Infof("Image md5: %s", h)
 
-	uploadMinitaIMG(bot.s3, h, resp.Body)
+	err = uploadMinitaIMG(bot.s3, h, bytes.NewReader(buf), int64(len(buf)))
+	if err != nil {
+		log.Errorf("error uploading img: %v", err)
+		return
+	}
+
+	ctx.RespondText("Nueva minita añadida correctamente.\nMinita ID: " + h) //nolint
 }
 
 func loadMinitasKeys(client *minio.Client) {
@@ -101,18 +107,18 @@ func pickRandomMinita() string {
 
 func computeImageMD5(buf []byte) string {
 	h := md5.New() //nolint
-	return hex.EncodeToString(h.Sum(buf))
+	h.Write(buf)
+	return hex.EncodeToString(h.Sum(nil))
 }
 
-func uploadMinitaIMG(client *minio.Client, key string, src io.Reader) {
+func uploadMinitaIMG(client *minio.Client, key string, src io.Reader, size int64) error {
 	opts := minio.PutObjectOptions{
 		ContentType: "image/png",
 	}
 
-	uploadInfo, err := client.PutObject(context.Background(), "nbot-data", "minitas/"+key+".png", src, -1, opts)
+	_, err := client.PutObject(context.Background(), "nbot-data", "minitas/"+key+".png", src, size, opts)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
-	log.Info("Successfully uploaded bytes: ", uploadInfo)
+	return nil
 }
