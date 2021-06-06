@@ -19,3 +19,4 @@
 
 internal/bot/bot_test.go
 target/golist.json
+cmd/nbot/__debug_bin
