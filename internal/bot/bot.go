@@ -18,6 +18,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/milgradesec/nbot/internal/db"
+	"github.com/milgradesec/nbot/internal/storage"
 )
 
 type Bot struct {
@@ -113,7 +114,7 @@ func (bot *Bot) Run() { //nolint
 	}
 	bot.db = db
 
-	s3client, err := newS3Client()
+	s3client, err := storage.NewS3Client()
 	if err != nil {
 		log.Fatalf("error: failed to create s3 client")
 	}

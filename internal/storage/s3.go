@@ -1,4 +1,4 @@
-package bot
+package storage
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-func newS3Client() (*minio.Client, error) {
+func NewS3Client() (*minio.Client, error) {
 	accessKey, found := os.LookupEnv("S3_ACCESS_KEY")
 	if !found {
 		return nil, errors.New("")

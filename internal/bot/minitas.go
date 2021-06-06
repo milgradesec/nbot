@@ -3,6 +3,7 @@ package bot
 import (
 	"context"
 	"math/rand"
+	"time"
 
 	"github.com/lus/dgc"
 	"github.com/minio/minio-go/v7"
@@ -12,7 +13,10 @@ import (
 var minitasObjectKeys []string
 
 func loadMinitasKeys(client *minio.Client) {
-	objectCh := client.ListObjects(context.TODO(), "nbot-data", minio.ListObjectsOptions{
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	objectCh := client.ListObjects(ctx, "nbot-data", minio.ListObjectsOptions{
 		Prefix:    "img/minitas",
 		Recursive: true,
 	})
@@ -26,7 +30,7 @@ func loadMinitasKeys(client *minio.Client) {
 }
 
 func pickRandomMinita() string {
-	randomIndex := rand.Intn(len(minitasObjectKeys))
+	randomIndex := rand.Intn(len(minitasObjectKeys)) //nolint
 	return minitasObjectKeys[randomIndex]
 }
 
