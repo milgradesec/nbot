@@ -20,7 +20,7 @@ func (bot *Bot) getRandomQuote() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	row := bot.db.QueryRowContext(ctx, "SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1")
+	row := bot.db.QueryRowContext(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`)
 	var quote string
 	if err := row.Scan(&quote); err != nil {
 		log.Error(err)
@@ -36,7 +36,7 @@ func (bot *Bot) getAllQuotes() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	rows, err := bot.db.QueryContext(ctx, "SELECT * FROM quotes")
+	rows, err := bot.db.QueryContext(ctx, `SELECT * FROM quotes`)
 	if err != nil {
 		log.Errorf("error: failed to query db: %v\n", err)
 	}
