@@ -72,16 +72,6 @@ func (bot *Bot) Run() { //nolint
 		Handler:    bot.versionHandler,
 	})
 	router.RegisterCmd(&dgc.Command{
-		Name:       "fact",
-		IgnoreCase: true,
-		Handler:    bot.factHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "joke",
-		IgnoreCase: true,
-		Handler:    bot.jokeHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
 		Name:       "qr",
 		IgnoreCase: true,
 		Handler:    bot.qrHandler,
