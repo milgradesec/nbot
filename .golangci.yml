@@ -55,6 +55,11 @@ linters:
     - forcetypeassert
     - goheader
 
+linters-settings:
+  misspell:
+    ignore-words:
+      - comando
+
 run:
   skip-dirs:
     - testdata
