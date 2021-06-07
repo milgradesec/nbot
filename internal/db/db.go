@@ -49,7 +49,6 @@ func OpenDB() (*sql.DB, error) {
 	}
 
 	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=disable"
-
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		return nil, err
