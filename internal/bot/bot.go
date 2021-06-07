@@ -9,7 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	_ "github.com/lib/pq" // psql driver
 	"github.com/lus/dgc"
 	httpc "github.com/milgradesec/go-libs/http"
 	"github.com/minio/minio-go/v7"
