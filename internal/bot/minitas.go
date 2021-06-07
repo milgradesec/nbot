@@ -24,7 +24,7 @@ func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
 
 func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 	msg := ctx.Event.Message
-	if msg.Author.Username != "MILGRADESEC" && msg.Author.Username != "L. L." {
+	if msg.Author.Username != "MILGRADESEC" && msg.Author.Username != "L. L." && msg.Author.Username != "Kirt" {
 		ctx.RespondText("Tu no tienes permiso para añadir nada") //nolint
 		return
 	}
