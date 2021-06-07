@@ -30,7 +30,7 @@ func newRiotAPIClient() (apiclient.Client, error) {
 		if !found {
 			return nil, errors.New("RIOT_APIKEY env variable not set")
 		}
-		log.Warnln("Using unencrypted Riot API Key from ENV, consider switching to RIOT_APIKEY_FILE")
+		log.Warnln("Using unencrypted Riot API Key from env, consider switching to RIOT_APIKEY_FILE")
 	}
 
 	return apiclient.New(apikey, httpc.NewHTTPClient(), ratelimit.NewLimiter()), nil
