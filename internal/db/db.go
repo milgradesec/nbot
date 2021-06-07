@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"errors"
-	"io/ioutil"
 	"os"
 
 	_ "github.com/lib/pq" // psql driver
@@ -36,7 +35,7 @@ func OpenDB() (*sql.DB, error) {
 
 	dbPassFile, found := os.LookupEnv("POSTGRES_DB_PASSWORD_FILE")
 	if found {
-		buf, err := ioutil.ReadFile(dbPassFile)
+		buf, err := os.ReadFile(dbPassFile)
 		if err != nil {
 			return nil, err
 		}
@@ -46,7 +45,7 @@ func OpenDB() (*sql.DB, error) {
 		if !found {
 			return nil, errors.New("POSTGRES_DB_PASSWORD env variable not set")
 		}
-		log.Warnln("Using unencrypted DB password from ENV, consider switching to POSTGRES_DB_PASSWORD_FILE")
+		log.Warnln("Using unencrypted DB password from env, consider switching to POSTGRES_DB_PASSWORD_FILE")
 	}
 
 	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=disable"
