@@ -21,7 +21,7 @@ func (bot *Bot) qrHandler(ctx *dgc.Ctx) {
 		log.Errorf("error: failed to get QR code from message '%s': %v", msg, err)
 	}
 
-	ctx.RespondEmbed(&discordgo.MessageEmbed{ //nolint
+	ctx.RespondEmbed(&discordgo.MessageEmbed{
 		Title: "Toma QR",
 		Image: &discordgo.MessageEmbedImage{
 			URL:    url,

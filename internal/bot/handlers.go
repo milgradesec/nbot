@@ -6,11 +6,11 @@ import (
 )
 
 func (bot *Bot) versionHandler(ctx *dgc.Ctx) {
-	ctx.RespondText(bot.Version) //nolint
+	ctx.RespondText(bot.Version)
 }
 
 func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
-	ctx.RespondEmbed(&discordgo.MessageEmbed{ //nolint
+	ctx.RespondEmbed(&discordgo.MessageEmbed{
 		Title: "Con Gafas",
 
 		Image: &discordgo.MessageEmbedImage{
@@ -20,7 +20,7 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 		},
 	})
 
-	ctx.RespondEmbed(&discordgo.MessageEmbed{ //nolint
+	ctx.RespondEmbed(&discordgo.MessageEmbed{
 		Title: "Sin Gafas",
 
 		Image: &discordgo.MessageEmbedImage{
@@ -32,5 +32,5 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 }
 
 func (bot *Bot) ptHandler(ctx *dgc.Ctx) {
-	ctx.RespondText("https://s3.paesa.es/nbot-data/clips/putero.mp4") //nolint
+	ctx.RespondText("https://s3.paesa.es/nbot-data/clips/putero.mp4")
 }

@@ -9,11 +9,11 @@ import (
 )
 
 func (bot *Bot) fraseHandler(ctx *dgc.Ctx) {
-	ctx.RespondText(bot.getRandomQuote()) //nolint
+	ctx.RespondText(bot.getRandomQuote())
 }
 
 func (bot *Bot) frasesHandler(ctx *dgc.Ctx) {
-	ctx.RespondText(bot.getAllQuotes()) //nolint
+	ctx.RespondText(bot.getAllQuotes())
 }
 
 func (bot *Bot) getRandomQuote() string {

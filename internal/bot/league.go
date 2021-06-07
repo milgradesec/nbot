@@ -45,7 +45,7 @@ func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
 			log.Errorf("error: failed to get league data: %v", err)
 			return
 		}
-		ctx.RespondText(msg) //nolint
+		ctx.RespondText(msg)
 	} else {
 		name := args.Raw()
 		msg, err := bot.getLeagueElo(name)
@@ -53,7 +53,7 @@ func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
 			log.Errorf("error: failed to get league data for '%s': %v", name, err)
 			return
 		}
-		ctx.RespondText(msg) //nolint
+		ctx.RespondText(msg)
 	}
 }
 

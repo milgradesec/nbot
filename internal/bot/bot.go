@@ -44,7 +44,7 @@ func (bot *Bot) Run() { //nolint
 		IgnorePrefixCase: true,
 		BotsAllowed:      false,
 		PingHandler: func(ctx *dgc.Ctx) {
-			ctx.RespondText("PONG!") //nolint
+			ctx.RespondText("PONG!")
 		},
 	})
 
@@ -57,7 +57,7 @@ func (bot *Bot) Run() { //nolint
 		Name:       "ping",
 		IgnoreCase: true,
 		Handler: func(ctx *dgc.Ctx) {
-			ctx.RespondText("PONG!") //nolint
+			ctx.RespondText("PONG!")
 		},
 	})
 	router.RegisterCmd(&dgc.Command{

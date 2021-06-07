@@ -19,19 +19,19 @@ import (
 
 func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
 	key := bot.pickRandomMinitaID()
-	ctx.RespondText("https://s3.paesa.es/nbot-data/minitas/" + key) //nolint
+	ctx.RespondText("https://s3.paesa.es/nbot-data/minitas/" + key)
 }
 
 func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 	msg := ctx.Event.Message
 	if msg.Author.Username != "MILGRADESEC" && msg.Author.Username != "L. L." && msg.Author.Username != "Kirt" {
-		ctx.RespondText("Tu no tienes permiso para añadir nada") //nolint
+		ctx.RespondText("Tu no tienes permiso para añadir nada")
 		return
 	}
 
 	args := ctx.Arguments
 	if args.Amount() != 1 {
-		ctx.RespondText("Aprendete el puto comando: !minita add URL") //nolint
+		ctx.RespondText("Aprendete el puto comando: !minita add URL")
 		return
 	}
 
@@ -78,7 +78,7 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 		return
 	}
 
-	ctx.RespondText("Nueva minita añadida correctamente.\nMinita ID: " + key) //nolint
+	ctx.RespondText("Nueva minita añadida correctamente.\nMinita ID: " + key)
 }
 
 func (bot *Bot) pickRandomMinitaID() string {
