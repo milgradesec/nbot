@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  nbot:
+    image: ghcr.io/milgradesec/nbot:latest
+    read_only: true
+    networks:
+      - db_network
+    environment:
+      - DISCORD_BOT_TOKEN_FILE=/run/secrets/nbot_discord_token
+      - POSTGRES_HOST=pgsql_db:5432
+      - POSTGRES_DB=nbot
+      - POSTGRES_USER=nbot
+      - POSTGRES_DB_PASSWORD_FILE=/run/secrets/nbot_db_password
+    secrets:
+      - nbot_discord_token
+      - nbot_db_password
+    logging:
+      options:
+        max-size: 1MB
+    cap_drop:
+      - ALL
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+
+secrets:
+  nbot_discord_token:
+    external: true
+  nbot_db_password:
+    external: true
+
+networks:
+  db_network:
+    external: true
