@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"context"
 	"crypto/md5" //nolint
+	"database/sql"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -23,15 +25,15 @@ func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
 }
 
 func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
-	msg := ctx.Event.Message
-	if msg.Author.Username != "MILGRADESEC" && msg.Author.Username != "L. L." && msg.Author.Username != "Kirt" {
-		ctx.RespondText("Tu no tienes permiso para añadir nada")
+	args := ctx.Arguments
+	if args.Amount() != 1 {
+		ctx.RespondText("Aprendete el comando: !minita add URL")
 		return
 	}
 
-	args := ctx.Arguments
-	if args.Amount() != 1 {
-		ctx.RespondText("Aprendete el puto comando: !minita add URL")
+	msg := ctx.Event.Message
+	if msg.Author.Username != "MILGRADESEC" && msg.Author.Username != "L. L." && msg.Author.Username != "Kirt" {
+		ctx.RespondText("Tu no tienes permiso para añadir nada. Putero.")
 		return
 	}
 
@@ -81,6 +83,57 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 	ctx.RespondText("Nueva minita añadida correctamente.\nMinita ID: " + key)
 }
 
+func (bot *Bot) deleteMinitaHandler(ctx *dgc.Ctx) {
+	args := ctx.Arguments
+	if args.Amount() != 1 {
+		ctx.RespondText("El comando es !minita delete MinitaID")
+		return
+	}
+
+	msg := ctx.Event.Message
+	if msg.Author.Username != "MILGRADESEC" {
+		ctx.RespondText("Tu no tienes permiso para quitar ninguna minita.")
+		return
+	}
+
+	id := args.Get(0).Raw()
+	found, err := bot.minitaExists(id)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	if !found {
+		ctx.RespondText("No existe ninguna minita con ese ID.")
+		return
+	}
+
+	if err = bot.deleteMinitaID(id); err != nil {
+		log.Error(err)
+	}
+
+	if err = bot.deleteMinitaIMG(id); err != nil {
+		log.Error(err)
+	}
+
+	ctx.RespondText("Minita eliminada correctamente.")
+}
+
+func (bot *Bot) minitaExists(id string) (bool, error) {
+	var result int
+	row := bot.db.QueryRow(`SELECT 1 FROM minitas WHERE id = $1`, id)
+	if err := row.Scan(&result); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return false, nil
+		}
+		return false, err
+	}
+
+	if err := row.Err(); err != nil {
+		return false, fmt.Errorf("error: failed to handle db response: %w", err)
+	}
+	return true, nil
+}
+
 func (bot *Bot) pickRandomMinitaID() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -115,7 +168,33 @@ func (bot *Bot) insertMinitaID(id string) error {
 	}
 	defer rows.Close()
 
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("error: failed to handle db response: %w", err)
+	}
 	return nil
+}
+
+func (bot *Bot) deleteMinitaID(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	result, err := bot.db.ExecContext(ctx, `DELETE FROM minitas WHERE id = $1`, id)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return errors.New("no rows affected")
+	}
+	return nil
+}
+
+func (bot *Bot) deleteMinitaIMG(key string) error {
+	return bot.s3.RemoveObject(context.Background(), "nbot-data", "minitas/"+key, minio.RemoveObjectOptions{})
 }
 
 func fetchImage(client *http.Client, url string) (*http.Response, error) {

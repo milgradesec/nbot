@@ -94,11 +94,17 @@ func (bot *Bot) Run() { //nolint
 		Name:       "minita",
 		IgnoreCase: true,
 		Handler:    bot.minitaHandler,
-		SubCommands: []*dgc.Command{{
-			Name:       "add",
-			IgnoreCase: true,
-			Handler:    bot.addMinitaHandler,
-		}},
+		SubCommands: []*dgc.Command{
+			{
+				Name:       "add",
+				IgnoreCase: true,
+				Handler:    bot.addMinitaHandler,
+			},
+			{
+				Name:       "delete",
+				IgnoreCase: true,
+				Handler:    bot.deleteMinitaHandler,
+			}},
 	})
 	router.Initialize(session)
 
