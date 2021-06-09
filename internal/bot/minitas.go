@@ -72,7 +72,8 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 	}
 
 	opts := minio.PutObjectOptions{
-		ContentType: contentType,
+		ContentType:  contentType,
+		CacheControl: "public, max-age=604800",
 	}
 	err = bot.uploadMinitaIMG(key, bytes.NewReader(buf), int64(len(buf)), opts)
 	if err != nil {
