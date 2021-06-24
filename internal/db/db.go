@@ -48,7 +48,7 @@ func OpenDB() (*sql.DB, error) {
 		log.Warnln("Using unencrypted DB password from env, consider switching to POSTGRES_DB_PASSWORD_FILE")
 	}
 
-	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=disable"
+	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=require"
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		return nil, err
