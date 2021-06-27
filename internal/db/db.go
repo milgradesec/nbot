@@ -15,6 +15,7 @@ func OpenDB() (*sql.DB, error) {
 		dbName     string
 		dbUser     string
 		dbPassword string
+		rootCA     string
 		found      bool
 	)
 
@@ -48,7 +49,13 @@ func OpenDB() (*sql.DB, error) {
 		log.Warnln("Using unencrypted DB password from env, consider switching to POSTGRES_DB_PASSWORD_FILE")
 	}
 
-	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=require"
+	rootCA, found = os.LookupEnv("SSL_ROOT_CERT")
+	if !found {
+		return nil, errors.New("SSL_ROOT_CERT env variable not set")
+	}
+
+	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=verify-ca&sslrootcert=" + rootCA //nolint
+	log.Infoln(connStr)
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		return nil, err

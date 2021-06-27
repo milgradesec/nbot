@@ -234,8 +234,8 @@ github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Ky
 github.com/mattn/go-runewidth v0.0.2/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/miekg/dns v1.0.14/go.mod h1:W1PPwlIAgtquWBMBEV9nkV9Cazfe8ScdGz/Lj7v3Nrg=
-github.com/milgradesec/go-libs v0.0.0-20210514165644-eccffb3aa8cf h1:CPt6hhL3H9XtjEsG3JdRgJkQHOenOA6B36bfwFwUOSM=
-github.com/milgradesec/go-libs v0.0.0-20210514165644-eccffb3aa8cf/go.mod h1:HJ40un7Pyc0ufZvHYbUMZr6hG2k3aPrxIcY4S9KGfX0=
+github.com/milgradesec/go-libs v0.0.0-20210625123454-12a77d245d5a h1:/I4HkUY4lJYW8GK7V0wMe7AQPCpLK8eGCiZu5fy1+DY=
+github.com/milgradesec/go-libs v0.0.0-20210625123454-12a77d245d5a/go.mod h1:HJ40un7Pyc0ufZvHYbUMZr6hG2k3aPrxIcY4S9KGfX0=
 github.com/minio/md5-simd v1.1.0 h1:QPfiOqlZH+Cj9teu0t9b1nTBfPbyTl16Of5MeuShdK4=
 github.com/minio/md5-simd v1.1.0/go.mod h1:XpBqgZULrMYD3R+M28PcmP0CkI7PEMzB3U77ZrKZ0Gw=
 github.com/minio/minio-go/v7 v7.0.11 h1:7utSkCtMQPYYB1UB8FR3d0QSiOWE6F/JYXon29imYek=
