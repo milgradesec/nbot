@@ -54,7 +54,7 @@ func OpenDB() (*sql.DB, error) {
 		return nil, errors.New("SSL_ROOT_CERT env variable not set")
 	}
 
-	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=verify-ca&sslrootcert=" + rootCA //nolint
+	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=verify-full&sslrootcert=" + rootCA //nolint
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		return nil, err
