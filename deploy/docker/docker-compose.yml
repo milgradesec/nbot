@@ -47,7 +47,3 @@ secrets:
     external: true
   paesa_ca_crt:
     external: true
-
-networks:
-  db_network:
-    external: true
