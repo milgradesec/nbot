@@ -10,7 +10,7 @@ services:
       - POSTGRES_DB=nbot
       - POSTGRES_USER=nbot
       - POSTGRES_DB_PASSWORD_FILE=/run/secrets/nbot_db_password
-      - SSL_ROOT_CERT=/run/secrets/paesa_ca_crt
+      - SSL_ROOT_CERT=/run/secrets/paesa_ca_cert
       - S3_ACCESS_KEY_FILE=/run/secrets/nbot_s3_access_key
       - S3_SECRET_KEY_FILE=/run/secrets/nbot_s3_secret_key
       - RIOT_APIKEY_FILE=/run/secrets/nbot_riot_apikey
@@ -20,7 +20,7 @@ services:
       - nbot_s3_access_key
       - nbot_s3_secret_key
       - nbot_riot_apikey
-      - paesa_ca_crt
+      - paesa_ca_cert
     logging:
       options:
         max-size: 1MB
@@ -43,5 +43,5 @@ secrets:
     external: true
   nbot_riot_apikey:
     external: true
-  paesa_ca_crt:
+  paesa_ca_cert:
     external: true
