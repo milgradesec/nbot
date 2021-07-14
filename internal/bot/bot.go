@@ -54,6 +54,18 @@ func (bot *Bot) Run() { //nolint
 		Handler:    bot.fraseHandler,
 	})
 	router.RegisterCmd(&dgc.Command{
+		Name:       "quote",
+		IgnoreCase: true,
+		Handler:    bot.fraseHandler,
+		SubCommands: []*dgc.Command{
+			{
+				Name:       "add",
+				IgnoreCase: true,
+				Handler:    bot.addQuoteHandler,
+			},
+		},
+	})
+	router.RegisterCmd(&dgc.Command{
 		Name:       "ping",
 		IgnoreCase: true,
 		Handler: func(ctx *dgc.Ctx) {
