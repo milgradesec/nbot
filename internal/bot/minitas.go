@@ -136,7 +136,7 @@ func (bot *Bot) minitaExists(id string) (bool, error) {
 }
 
 func (bot *Bot) pickRandomMinitaID() string {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	var id string
@@ -160,7 +160,7 @@ func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts mini
 }
 
 func (bot *Bot) insertMinitaID(id string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	rows, err := bot.db.QueryContext(ctx, `INSERT INTO minitas VALUES ($1)`, id)
@@ -176,7 +176,7 @@ func (bot *Bot) insertMinitaID(id string) error {
 }
 
 func (bot *Bot) deleteMinitaID(id string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	result, err := bot.db.ExecContext(ctx, `DELETE FROM minitas WHERE id = $1`, id)
@@ -195,11 +195,17 @@ func (bot *Bot) deleteMinitaID(id string) error {
 }
 
 func (bot *Bot) deleteMinitaIMG(key string) error {
-	return bot.s3.RemoveObject(context.Background(), "nbot-data", "minitas/"+key, minio.RemoveObjectOptions{})
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	return bot.s3.RemoveObject(ctx, "nbot-data", "minitas/"+key, minio.RemoveObjectOptions{})
 }
 
 func fetchImage(client *http.Client, url string) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(context.Background(), "GET", url, nil)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
