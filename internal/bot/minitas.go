@@ -21,7 +21,7 @@ import (
 
 func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
 	key := bot.pickRandomMinitaID()
-	ctx.RespondText("https://s3.paesa.es/nbot-data/minitas/" + key)
+	ctx.RespondText("https://s3.paesa.es/nbot/minitas/" + key)
 }
 
 func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
@@ -152,7 +152,7 @@ func (bot *Bot) pickRandomMinitaID() string {
 }
 
 func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts minio.PutObjectOptions) error {
-	_, err := bot.s3.PutObject(context.Background(), "nbot-data", "minitas/"+key, src, size, opts)
+	_, err := bot.s3.PutObject(context.Background(), "nbot", "minitas/"+key, src, size, opts)
 	if err != nil {
 		return err
 	}
@@ -198,7 +198,7 @@ func (bot *Bot) deleteMinitaIMG(key string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	return bot.s3.RemoveObject(ctx, "nbot-data", "minitas/"+key, minio.RemoveObjectOptions{})
+	return bot.s3.RemoveObject(ctx, "nbot", "minitas/"+key, minio.RemoveObjectOptions{})
 }
 
 func fetchImage(client *http.Client, url string) (*http.Response, error) {

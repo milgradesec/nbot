@@ -14,7 +14,7 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 		Title: "Con Gafas",
 
 		Image: &discordgo.MessageEmbedImage{
-			URL:    "https://s3.paesa.es/nbot-data/img/congafas.png",
+			URL:    "https://s3.paesa.es/nbot/img/congafas.png",
 			Width:  400,
 			Height: 400,
 		},
@@ -24,7 +24,7 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 		Title: "Sin Gafas",
 
 		Image: &discordgo.MessageEmbedImage{
-			URL:    "https://s3.paesa.es/nbot-data/img/singafas.png",
+			URL:    "https://s3.paesa.es/nbot/img/singafas.png",
 			Width:  400,
 			Height: 400,
 		},
@@ -32,5 +32,5 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 }
 
 func (bot *Bot) ptHandler(ctx *dgc.Ctx) {
-	ctx.RespondText("https://s3.paesa.es/nbot-data/clips/putero.mp4")
+	ctx.RespondText("https://s3.paesa.es/nbot/clips/putero.mp4")
 }
