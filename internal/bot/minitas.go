@@ -46,7 +46,7 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 
 	resp, err := fetchImage(bot.client, u.String())
 	if err != nil {
-		log.Error(err)
+		log.Errorf("error: failed to fetch image from source: %v", err)
 		return
 	}
 	defer resp.Body.Close()
