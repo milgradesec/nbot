@@ -20,7 +20,11 @@ import (
 )
 
 func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
-	key := bot.pickRandomMinitaID()
+	key, err := bot.pickRandomMinitaID()
+	if err != nil {
+		ctx.RespondText("Se ha producido un error interno.")
+		return
+	}
 	ctx.RespondText("https://s3.paesa.es/nbot/minitas/" + key)
 }
 
@@ -135,20 +139,20 @@ func (bot *Bot) minitaExists(id string) (bool, error) {
 	return true, nil
 }
 
-func (bot *Bot) pickRandomMinitaID() string {
+func (bot *Bot) pickRandomMinitaID() (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	var id string
 	row := bot.db.QueryRowContext(ctx, `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`)
 	if err := row.Scan(&id); err != nil {
-		log.Error(err)
+		return id, err
 	}
 
 	if err := row.Err(); err != nil {
-		log.Errorf("error: failed to handle db response: %v\n", err)
+		return id, fmt.Errorf("error: failed to handle db response: %w", err)
 	}
-	return id
+	return id, nil
 }
 
 func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts minio.PutObjectOptions) error {
