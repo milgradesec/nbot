@@ -6,7 +6,7 @@ services:
     read_only: true
     environment:
       - DISCORD_BOT_TOKEN_FILE=/run/secrets/nbot_discord_token
-      - POSTGRES_HOST=pgsql.paesa.es
+      - POSTGRES_HOST=pgsql.service.docker
       - POSTGRES_DB=nbot
       - POSTGRES_USER=nbot
       - POSTGRES_DB_PASSWORD_FILE=/run/secrets/nbot_db_password
@@ -14,6 +14,8 @@ services:
       - S3_ACCESS_KEY_FILE=/run/secrets/nbot_s3_access_key
       - S3_SECRET_KEY_FILE=/run/secrets/nbot_s3_secret_key
       - RIOT_APIKEY_FILE=/run/secrets/nbot_riot_apikey
+    networks:
+      - db_network
     secrets:
       - nbot_discord_token
       - nbot_db_password
@@ -21,16 +23,14 @@ services:
       - nbot_s3_secret_key
       - nbot_riot_apikey
       - paesa_ca_cert
+    cap_drop:
+      - ALL
     logging:
       options:
         max-size: 1MB
-    cap_drop:
-      - ALL
     deploy:
       restart_policy:
-        condition: any
-        delay: 5s
-        max_attempts: 5
+        delay: 1m
 
 secrets:
   nbot_discord_token:
@@ -44,4 +44,8 @@ secrets:
   nbot_riot_apikey:
     external: true
   paesa_ca_cert:
+    external: true
+
+networks:
+  db_network:
     external: true
