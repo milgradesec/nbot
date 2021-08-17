@@ -23,3 +23,10 @@ test:
 .PHONY: lint
 lint:
 	golangci-lint run
+
+release:
+	docker buildx build . -f build.Dockerfile \
+		--platform linux/arm64 \
+		--tag ghcr.io/milgradesec/nbot:$(VERSION) \
+		--tag ghcr.io/milgradesec/nbot:latest \
+		--push
