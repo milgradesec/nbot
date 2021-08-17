@@ -17,7 +17,7 @@ RUN make build
 FROM alpine:3.14.1
 
 RUN apk update && \
-    apk add --no-cache ca-certificates && \
+    apk --no-cache add ca-certificates && \
     addgroup -S nbot && \
     adduser -S -G nbot nbot
 
