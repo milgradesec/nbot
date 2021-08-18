@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.23.2
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/lus/dgc v1.1.0
-	github.com/milgradesec/go-libs v0.0.0-20210625123454-12a77d245d5a
+	github.com/milgradesec/go-libs v0.0.0-20210817025837-3893b8cbfe4a
 	github.com/minio/minio-go/v7 v7.0.12
 	github.com/sirupsen/logrus v1.8.1
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
@@ -15,7 +15,7 @@ require (
 require (
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/google/uuid v1.1.1 // indirect
-	github.com/gorilla/websocket v1.4.0 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.10.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
