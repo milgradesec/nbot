@@ -51,7 +51,7 @@ func (bot *Bot) insertNewQuote(quote string) error {
 }
 
 func (bot *Bot) getRandomQuote() string {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	row := bot.db.QueryRowContext(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`)
@@ -67,7 +67,7 @@ func (bot *Bot) getRandomQuote() string {
 }
 
 func (bot *Bot) getAllQuotes() string {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	rows, err := bot.db.QueryContext(ctx, `SELECT * FROM quotes`)
