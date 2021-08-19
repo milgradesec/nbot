@@ -11,7 +11,6 @@ build:
 
 clean:
 	go clean
-	rm nbot.exe
 
 test:
 	go test ./...
