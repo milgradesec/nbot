@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   nbot:
-    image: ghcr.io/milgradesec/nbot:latest
+    image: ghcr.io/milgradesec/nbot:${TAG:-latest}
     read_only: true
     environment:
       - DISCORD_BOT_TOKEN_FILE=/run/secrets/nbot_discord_token
