@@ -58,7 +58,7 @@ func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
 }
 
 func (bot *Bot) getLeagueElo(name string) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	summ, err := bot.riotapi.GetBySummonerName(ctx, region.EUW1, name)
