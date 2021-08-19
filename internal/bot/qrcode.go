@@ -34,7 +34,7 @@ func (bot *Bot) qrHandler(ctx *dgc.Ctx) {
 func (bot *Bot) getQRCodeURL(msg string) (string, error) {
 	u := "https://qrcode.paesa.es/qr?data=" + url.QueryEscape(msg)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
