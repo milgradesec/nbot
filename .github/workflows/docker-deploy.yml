@@ -2,8 +2,8 @@ name: Docker Deploy
 
 on:
   push:
-    # tags:
-    #   - v*
+    tags:
+      - v*
 
 jobs:
   build:
