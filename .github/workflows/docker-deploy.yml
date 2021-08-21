@@ -1,9 +1,9 @@
-name: Docker Deploy
+name: Docker Build and Deploy
 
 on:
   push:
-    # tags:
-    #   - v*
+    tags:
+      - v*
 
 jobs:
   build:
@@ -20,11 +20,11 @@ jobs:
       - name: Login to Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      # - name: Build and Push
-      #   run: make release
+      - name: Build and Push
+        run: make release
 
       - name: Set env
-        run: echo TAG=latest #${GITHUB_REF#refs/*/} >> $GITHUB_ENV
+        run: echo TAG=${GITHUB_REF#refs/*/} >> $GITHUB_ENV
 
       - name: Docker Deployment
         uses: wshihadeh/docker-deployment-action@v2
