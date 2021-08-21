@@ -27,16 +27,11 @@ jobs:
         run: echo TAG=latest #${GITHUB_REF#refs/*/} >> $GITHUB_ENV
 
       - name: Docker Deployment
-        run: |
-          docker --log-level debug \
-            --host ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:22 \
-            stack deploy --compose-file ./deploy/docker/docker-compose.yml nbot
-      # - name: Docker Deployment
-      #   uses: wshihadeh/docker-deployment-action@v2
-      #   with:
-      #     remote_docker_host: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-      #     ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
-      #     ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
-      #     deployment_mode: docker-swarm
-      #     stack_file_name: ./deploy/docker/docker-compose.yml
-      #     args: nbot
+        uses: wshihadeh/docker-deployment-action@v2
+        with:
+          remote_docker_host: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+          ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
+          ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
+          deployment_mode: docker-swarm
+          stack_file_name: ./deploy/docker/docker-compose.yml
+          args: nbot
