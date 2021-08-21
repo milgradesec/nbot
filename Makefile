@@ -18,6 +18,9 @@ test:
 lint:
 	golangci-lint run
 
+docker:
+	docker build . -f build.Dockerfile
+
 release:
 	docker buildx build . -f build.Dockerfile \
 		--platform linux/arm64 \
