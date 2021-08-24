@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.23.2
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/lus/dgc v1.1.0
-	github.com/milgradesec/go-libs v0.0.0-20210818021116-d4de0881ccfe
+	github.com/milgradesec/go-libs v0.0.0-20210821055621-18f6344d0d12
 	github.com/minio/minio-go/v7 v7.0.12
 	github.com/sirupsen/logrus v1.8.1
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
@@ -25,7 +25,7 @@ require (
 	github.com/jackc/pgtype v1.8.1 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/karrick/tparse/v2 v2.8.2 // indirect
-	github.com/klauspost/cpuid/v2 v2.0.4 // indirect
+	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -35,7 +35,7 @@ require (
 	github.com/zekroTJA/timedmap v1.4.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect
-	golang.org/x/sys v0.0.0-20210820121016-41cdb8703e55 // indirect
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 )
