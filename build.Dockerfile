@@ -14,7 +14,7 @@ COPY . .
 
 RUN make build
 
-FROM alpine:3.14.1
+FROM alpine:3.14.2
 
 RUN apk update && \
     apk --no-cache add ca-certificates && \
