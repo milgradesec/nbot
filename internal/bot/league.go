@@ -38,23 +38,20 @@ func newRiotAPIClient() (apiclient.Client, error) {
 
 func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
 	args := ctx.Arguments
+	var name string
 
 	if args.Amount() == 0 {
-		msg, err := bot.getLeagueElo("PEIN PACKER")
-		if err != nil {
-			log.Errorf("error: failed to get league data: %v", err)
-			return
-		}
-		ctx.RespondText(msg)
+		name = "MKT L L"
 	} else {
-		name := args.Raw()
-		msg, err := bot.getLeagueElo(name)
-		if err != nil {
-			log.Errorf("error: failed to get league data for '%s': %v", name, err)
-			return
-		}
-		ctx.RespondText(msg)
+		name = args.Raw()
 	}
+
+	msg, err := bot.getLeagueElo(name)
+	if err != nil {
+		log.Errorf("error: failed to get league data for '%s': %v", name, err)
+		return
+	}
+	ctx.RespondText(msg)
 }
 
 func (bot *Bot) getLeagueElo(name string) (string, error) {
