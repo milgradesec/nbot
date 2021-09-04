@@ -25,5 +25,7 @@ FROM scratch
 
 COPY --from=0 /go/src/app/nbot /nbot
 COPY --from=1 /etc/ssl/certs /etc/ssl/certs
+COPY --from=1 /etc/passwd /etc/passwd
 
+USER nbot
 ENTRYPOINT ["/nbot"]
