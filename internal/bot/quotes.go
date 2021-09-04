@@ -9,11 +9,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (bot *Bot) fraseHandler(ctx *dgc.Ctx) {
+func (bot *Bot) quoteHandler(ctx *dgc.Ctx) {
 	ctx.RespondText(bot.getRandomQuote())
 }
 
-func (bot *Bot) frasesHandler(ctx *dgc.Ctx) {
+func (bot *Bot) quotesHandler(ctx *dgc.Ctx) {
 	ctx.RespondText(bot.getAllQuotes())
 }
 
