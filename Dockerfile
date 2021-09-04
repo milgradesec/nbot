@@ -8,6 +8,9 @@ RUN apk update && \
 FROM scratch
 
 COPY --from=0 /etc/ssl/certs /etc/ssl/certs
+COPY --from=0 /etc/passwd /etc/passwd
 
 ADD nbot /nbot
+
+USER nbot
 ENTRYPOINT ["/nbot"]
