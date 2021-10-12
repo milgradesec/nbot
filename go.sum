@@ -121,8 +121,8 @@ github.com/mattn/go-colorable v0.1.6/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope
 github.com/mattn/go-isatty v0.0.5/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
 github.com/mattn/go-isatty v0.0.7/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
-github.com/milgradesec/go-libs v0.0.0-20210825222923-51976f784198 h1:Fq2K3ddLq+QLtVlozQgSYaYBGP97hOaY30pP+qoTpio=
-github.com/milgradesec/go-libs v0.0.0-20210825222923-51976f784198/go.mod h1:A6oJlLiKIyuj0k4Q8bwgMEpLntenS2e6j+kR3hC/5Wk=
+github.com/milgradesec/go-libs v0.0.0-20210913211926-a68de7d43f6e h1:dTMSrf/xXnoT0JUT9rE5s0xwQmgfH6BOLxm/PEXwmQc=
+github.com/milgradesec/go-libs v0.0.0-20210913211926-a68de7d43f6e/go.mod h1:A6oJlLiKIyuj0k4Q8bwgMEpLntenS2e6j+kR3hC/5Wk=
 github.com/minio/md5-simd v1.1.0/go.mod h1:XpBqgZULrMYD3R+M28PcmP0CkI7PEMzB3U77ZrKZ0Gw=
 github.com/minio/md5-simd v1.1.2 h1:Gdi1DZK69+ZVMoNHRXJyNcxrMA4dSxoYHZSQbirFg34=
 github.com/minio/md5-simd v1.1.2/go.mod h1:MzdKDxYpY2BT9XQFocsiZf/NKVtR7nkE4RoEpN+20RM=
