@@ -7,7 +7,7 @@ require (
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/lus/dgc v1.1.0
 	github.com/milgradesec/go-libs v0.0.0-20210913211926-a68de7d43f6e
-	github.com/minio/minio-go/v7 v7.0.14
+	github.com/minio/minio-go/v7 v7.0.15
 	github.com/sirupsen/logrus v1.8.1
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
 )
@@ -25,6 +25,7 @@ require (
 	github.com/jackc/pgtype v1.8.1 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/karrick/tparse/v2 v2.8.2 // indirect
+	github.com/klauspost/compress v1.13.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
