@@ -57,6 +57,7 @@ linters:
     - bidichk
     - nilnil
     - contextcheck
+    - ireturn
 
 linters-settings:
   misspell:
