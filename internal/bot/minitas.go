@@ -25,7 +25,13 @@ func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
 		ctx.RespondText("Se ha producido un error interno.")
 		return
 	}
-	ctx.RespondText("https://s3.paesa.es/nbot/minitas/" + key)
+
+	url, err := bot.generatePresignedURL("minitas/" + key)
+	if err != nil {
+		log.Errorf("error: failed to generate presigned url: %v", err)
+		return
+	}
+	ctx.RespondText(url)
 }
 
 func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
