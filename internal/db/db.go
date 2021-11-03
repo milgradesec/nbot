@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func OpenDB() (*sql.DB, error) {
+func OpenDB() (*sql.DB, error) { //nolint
 	var (
 		dbHost     string
 		dbName     string
