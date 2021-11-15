@@ -213,7 +213,7 @@ func fetchImage(client *http.Client, url string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Accept", "image/png,image/jpeg")
+	req.Header.Set("Accept", "image/webp,image/jpeg,image/png")
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -238,6 +238,8 @@ func addContentTypeToKey(contentType, key string) string {
 		return key + ".png"
 	case "image/jpeg":
 		return key + ".jpeg"
+	case "image/webp":
+		return key + ".webp"
 	}
 	return key
 }
