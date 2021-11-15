@@ -11,7 +11,7 @@ func (bot *Bot) versionHandler(ctx *dgc.Ctx) {
 }
 
 func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
-	url, err := bot.generatePresignedURL("img/congafas.png")
+	url, err := bot.generatePresignedURL("img/congafas.webp")
 	if err != nil {
 		log.Errorf("error: failed to generate presigned url: %v", err)
 		return
@@ -27,7 +27,7 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 		},
 	})
 
-	url, err = bot.generatePresignedURL("img/singafas.png")
+	url, err = bot.generatePresignedURL("img/singafas.webp")
 	if err != nil {
 		log.Errorf("error: failed to generate presigned url: %v", err)
 		return
