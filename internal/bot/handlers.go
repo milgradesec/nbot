@@ -16,7 +16,6 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 		log.Errorf("error: failed to generate presigned url: %v", err)
 		return
 	}
-
 	ctx.RespondEmbed(&discordgo.MessageEmbed{
 		Title: "Con Gafas",
 
@@ -32,7 +31,6 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 		log.Errorf("error: failed to generate presigned url: %v", err)
 		return
 	}
-
 	ctx.RespondEmbed(&discordgo.MessageEmbed{
 		Title: "Sin Gafas",
 
