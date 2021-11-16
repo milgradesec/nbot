@@ -22,6 +22,7 @@ import (
 func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
 	key, err := bot.pickRandomMinitaID()
 	if err != nil {
+		log.Errorf("error: failed pick a random minita: %v", err)
 		ctx.RespondText("Se ha producido un error interno.")
 		return
 	}
@@ -50,7 +51,7 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 	urlArg := args.Get(0)
 	u, err := url.Parse(urlArg.Raw())
 	if err != nil {
-		log.Error(err)
+		log.Errorf("error: failed to parse url '%s': %v", urlArg.Raw(), err)
 		return
 	}
 
@@ -63,7 +64,7 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 
 	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("error: failed to read response body: %v", err)
 		return
 	}
 	h := computeMD5(buf)
@@ -77,7 +78,7 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 
 	err = bot.insertMinitaID(key)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("error: failed to insert minita with id '%s': %v", key, err)
 		return
 	}
 
@@ -87,11 +88,11 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 	}
 	err = bot.uploadMinitaIMG(key, bytes.NewReader(buf), int64(len(buf)), opts)
 	if err != nil {
-		log.Errorf("error uploading img: %v", err)
+		log.Errorf("error: error uploading image to s3: %v", err)
 		return
 	}
 
-	ctx.RespondText("Nueva minita añadida correctamente.\nMinita ID: " + key)
+	ctx.RespondText("✔️ Nueva minita añadida correctamente.\nMinita ID: " + key)
 }
 
 func (bot *Bot) deleteMinitaHandler(ctx *dgc.Ctx) {
@@ -110,7 +111,7 @@ func (bot *Bot) deleteMinitaHandler(ctx *dgc.Ctx) {
 	id := args.Get(0).Raw()
 	found, err := bot.minitaExists(id)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("error: failed check if minita with id '%s' already exists: %v", id, err)
 		return
 	}
 	if !found {
@@ -119,14 +120,14 @@ func (bot *Bot) deleteMinitaHandler(ctx *dgc.Ctx) {
 	}
 
 	if err = bot.deleteMinitaID(id); err != nil {
-		log.Error(err)
+		log.Errorf("error: failed to delete minita with id '%s': %v", id, err)
 	}
 
 	if err = bot.deleteMinitaIMG(id); err != nil {
-		log.Error(err)
+		log.Errorf("error: failed to delete minita image from s3: %v", err)
 	}
 
-	ctx.RespondText("Minita eliminada correctamente.")
+	ctx.RespondText("✔️ Minita eliminada correctamente.")
 }
 
 func (bot *Bot) minitaExists(id string) (bool, error) {
@@ -140,7 +141,7 @@ func (bot *Bot) minitaExists(id string) (bool, error) {
 	}
 
 	if err := row.Err(); err != nil {
-		return false, fmt.Errorf("error: failed to handle db response: %w", err)
+		return false, fmt.Errorf("failed to handle db response: %w", err)
 	}
 	return true, nil
 }
@@ -152,11 +153,11 @@ func (bot *Bot) pickRandomMinitaID() (string, error) {
 	var id string
 	row := bot.db.QueryRowContext(ctx, `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`)
 	if err := row.Scan(&id); err != nil {
-		return id, err
+		return id, fmt.Errorf("failed to handle db response: %w", err)
 	}
 
 	if err := row.Err(); err != nil {
-		return id, fmt.Errorf("error: failed to handle db response: %w", err)
+		return id, fmt.Errorf("failed to handle db response: %w", err)
 	}
 	return id, nil
 }
@@ -180,7 +181,7 @@ func (bot *Bot) insertMinitaID(id string) error {
 	defer rows.Close()
 
 	if err := rows.Err(); err != nil {
-		return fmt.Errorf("error: failed to handle db response: %w", err)
+		return fmt.Errorf("failed to handle db response: %w", err)
 	}
 	return nil
 }

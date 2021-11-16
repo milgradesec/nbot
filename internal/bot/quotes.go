@@ -28,10 +28,10 @@ func (bot *Bot) addQuoteHandler(ctx *dgc.Ctx) {
 
 	err := bot.insertNewQuote(args.Raw())
 	if err != nil {
-		ctx.RespondText("Se ha producido un error al añadir la frase.")
+		ctx.RespondText("❌ Se ha producido un error al añadir la frase.")
 		return
 	}
-	ctx.RespondText("Frase añadida correctamente.")
+	ctx.RespondText("✔️ Frase añadida correctamente.")
 }
 
 func (bot *Bot) insertNewQuote(quote string) error {
@@ -54,10 +54,10 @@ func (bot *Bot) getRandomQuote() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	row := bot.db.QueryRowContext(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`)
 	var quote string
+	row := bot.db.QueryRowContext(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`)
 	if err := row.Scan(&quote); err != nil {
-		log.Error(err)
+		log.Errorf("error: failed to handle db response: %v\n", err)
 	}
 
 	if err := row.Err(); err != nil {

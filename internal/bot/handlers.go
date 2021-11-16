@@ -13,7 +13,7 @@ func (bot *Bot) versionHandler(ctx *dgc.Ctx) {
 func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 	url, err := bot.generatePresignedURL("img/congafas.webp")
 	if err != nil {
-		log.Errorf("error: failed to generate presigned url: %v", err)
+		log.Errorf("error: failed to generate presigned url: %v\n", err)
 		return
 	}
 	ctx.RespondEmbed(&discordgo.MessageEmbed{
@@ -28,7 +28,7 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 
 	url, err = bot.generatePresignedURL("img/singafas.webp")
 	if err != nil {
-		log.Errorf("error: failed to generate presigned url: %v", err)
+		log.Errorf("error: failed to generate presigned url: %v\n", err)
 		return
 	}
 	ctx.RespondEmbed(&discordgo.MessageEmbed{
@@ -40,12 +40,14 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 			Height: 400,
 		},
 	})
+
+	ctx.RespondText("Con o sin 👓? 👀👀")
 }
 
 func (bot *Bot) ptHandler(ctx *dgc.Ctx) {
 	url, err := bot.generatePresignedURL("clips/putero.mp4")
 	if err != nil {
-		log.Errorf("error: failed to generate presigned url: %v", err)
+		log.Errorf("error: failed to generate presigned url: %v\n", err)
 		return
 	}
 	ctx.RespondText(url)
