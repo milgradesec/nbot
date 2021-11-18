@@ -1,7 +1,7 @@
 FROM alpine:3.14.3
 
 RUN apk update && \
-    apk --no-cache add ca-certificates vips && \
+    apk --no-cache add ca-certificates && \
     addgroup -S nbot && \
     adduser -S -G nbot nbot
 
