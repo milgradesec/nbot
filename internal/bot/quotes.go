@@ -22,7 +22,7 @@ func (bot *Bot) addQuoteHandler(ctx *dgc.Ctx) {
 
 	msg := ctx.Event.Message
 	if msg.Author.Username != superUser {
-		ctx.RespondText("Tu no tienes permiso para añadir nada. Putero.")
+		ctx.RespondText("✋ Tu no tienes permiso para añadir nada. Putero.")
 		return
 	}
 
