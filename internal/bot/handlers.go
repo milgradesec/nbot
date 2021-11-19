@@ -11,6 +11,8 @@ func (bot *Bot) versionHandler(ctx *dgc.Ctx) {
 }
 
 func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
+	ctx.RespondText("Con o sin 👓? 👀👀")
+
 	url, err := bot.generatePresignedURL("img/congafas.webp")
 	if err != nil {
 		log.Errorf("error: failed to generate presigned url: %v\n", err)
@@ -21,8 +23,8 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 
 		Image: &discordgo.MessageEmbedImage{
 			URL:    url,
-			Width:  400,
-			Height: 400,
+			Width:  500,
+			Height: 500,
 		},
 	})
 
@@ -36,12 +38,10 @@ func (bot *Bot) gafasHandler(ctx *dgc.Ctx) {
 
 		Image: &discordgo.MessageEmbedImage{
 			URL:    url,
-			Width:  400,
-			Height: 400,
+			Width:  500,
+			Height: 500,
 		},
 	})
-
-	ctx.RespondText("Con o sin 👓? 👀👀")
 }
 
 func (bot *Bot) ptHandler(ctx *dgc.Ctx) {
