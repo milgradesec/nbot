@@ -9,7 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/lus/dgc"
 	httpc "github.com/milgradesec/go-libs/http"
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
@@ -31,7 +30,7 @@ type Bot struct {
 	riotapi  apiclient.Client
 }
 
-func (bot *Bot) Run() { //nolint
+func (bot *Bot) Run() {
 	rand.Seed(time.Now().Unix())
 
 	session, err := discordgo.New("Bot " + bot.Token)
@@ -42,29 +41,6 @@ func (bot *Bot) Run() { //nolint
 
 	bot.registerCommands()
 	session.AddHandler(bot.commandDispatcher)
-
-	router := dgc.Create(&dgc.Router{
-		Prefixes:         []string{"!"},
-		IgnorePrefixCase: true,
-		BotsAllowed:      false,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "minita",
-		IgnoreCase: true,
-		Handler:    bot.minitaHandler,
-		SubCommands: []*dgc.Command{
-			{
-				Name:       "add",
-				IgnoreCase: true,
-				Handler:    bot.addMinitaHandler,
-			},
-			{
-				Name:       "delete",
-				IgnoreCase: true,
-				Handler:    bot.deleteMinitaHandler,
-			}},
-	})
-	router.Initialize(session)
 
 	db, err := db.OpenDB()
 	if err != nil {

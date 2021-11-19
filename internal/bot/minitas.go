@@ -14,25 +14,35 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/lus/dgc"
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 )
 
-func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
-	key, err := bot.pickRandomMinitaID()
-	if err != nil {
-		log.Errorf("error: failed pick a random minita: %v", err)
-		ctx.RespondText("❌ Se ha producido un error interno.")
-		return
+func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+	if len(args) == 1 {
+		key, err := bot.pickRandomMinitaID()
+		if err != nil {
+			log.Errorf("error: failed pick a random minita: %v", err)
+			s.ChannelMessageSend(m.ChannelID, "❌ Se ha producido un error interno.")
+			return
+		}
+
+		url, err := bot.generatePresignedURL("minitas/" + key)
+		if err != nil {
+			log.Errorf("error: failed to generate presigned url: %v", err)
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, url)
 	}
 
-	url, err := bot.generatePresignedURL("minitas/" + key)
-	if err != nil {
-		log.Errorf("error: failed to generate presigned url: %v", err)
-		return
+	if len(args) > 2 {
+		switch args[1] {
+		case "add":
+		case "delete":
+		}
 	}
-	ctx.RespondText(url)
 }
 
 func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {

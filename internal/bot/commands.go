@@ -23,6 +23,7 @@ func (bot *Bot) registerCommands() {
 		"!frases": bot.quotesHandler,
 		"!gafas":  bot.gafasHandler,
 		"!elo":    bot.eloHandler,
+		"!minita": bot.minitaHandler,
 	}
 	bot.commands = commands
 }
