@@ -24,10 +24,11 @@ type Bot struct {
 	Version string
 	Token   string
 
-	db      *sql.DB
-	s3      *minio.Client
-	client  *http.Client
-	riotapi apiclient.Client
+	commands map[string]commandHandler
+	db       *sql.DB
+	s3       *minio.Client
+	client   *http.Client
+	riotapi  apiclient.Client
 }
 
 func (bot *Bot) Run() { //nolint
@@ -39,58 +40,13 @@ func (bot *Bot) Run() { //nolint
 	}
 	session.Client = httpc.NewHTTPClient()
 
+	bot.registerCommands()
+	session.AddHandler(bot.commandDispatcher)
+
 	router := dgc.Create(&dgc.Router{
 		Prefixes:         []string{"!"},
 		IgnorePrefixCase: true,
 		BotsAllowed:      false,
-		PingHandler: func(ctx *dgc.Ctx) {
-			ctx.RespondText("PONG!")
-		},
-	})
-
-	router.RegisterCmd(&dgc.Command{
-		Name:       "nbot",
-		IgnoreCase: true,
-		Handler:    bot.quoteHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "quote",
-		IgnoreCase: true,
-		Handler:    bot.quoteHandler,
-		SubCommands: []*dgc.Command{
-			{
-				Name:       "add",
-				IgnoreCase: true,
-				Handler:    bot.addQuoteHandler,
-			},
-		},
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "ping",
-		IgnoreCase: true,
-		Handler: func(ctx *dgc.Ctx) {
-			ctx.RespondText("PONG!")
-		},
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "frases",
-		IgnoreCase: true,
-		Handler:    bot.quotesHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "version",
-		IgnoreCase: true,
-		Handler:    bot.versionHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "putero",
-		IgnoreCase: true,
-		Handler:    bot.ptHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "gafas",
-		IgnoreCase: true,
-		Handler:    bot.gafasHandler,
 	})
 	router.RegisterCmd(&dgc.Command{
 		Name:       "elo",
