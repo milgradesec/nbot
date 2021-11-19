@@ -23,6 +23,7 @@ require (
 	github.com/jackc/pgproto3/v2 v2.1.1 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.8.1 // indirect
+	github.com/jackc/puddle v1.1.3 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/karrick/tparse/v2 v2.8.2 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect

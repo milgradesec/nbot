@@ -55,12 +55,8 @@ func (bot *Bot) getRandomQuote() string {
 	defer cancel()
 
 	var quote string
-	row := bot.db.QueryRowContext(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`)
-	if err := row.Scan(&quote); err != nil {
-		log.Errorf("error: failed to handle db response: %v\n", err)
-	}
-
-	if err := row.Err(); err != nil {
+	err := bot.dbpool.QueryRow(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`).Scan(&quote)
+	if err != nil {
 		log.Errorf("error: failed to handle db response: %v\n", err)
 	}
 	return quote
