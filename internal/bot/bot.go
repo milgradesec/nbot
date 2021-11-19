@@ -49,11 +49,6 @@ func (bot *Bot) Run() { //nolint
 		BotsAllowed:      false,
 	})
 	router.RegisterCmd(&dgc.Command{
-		Name:       "elo",
-		IgnoreCase: true,
-		Handler:    bot.eloHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
 		Name:       "minita",
 		IgnoreCase: true,
 		Handler:    bot.minitaHandler,

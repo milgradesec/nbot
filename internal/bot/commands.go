@@ -22,6 +22,7 @@ func (bot *Bot) registerCommands() {
 		"!quote":  bot.quoteHandler,
 		"!frases": bot.quotesHandler,
 		"!gafas":  bot.gafasHandler,
+		"!elo":    bot.eloHandler,
 	}
 	bot.commands = commands
 }
