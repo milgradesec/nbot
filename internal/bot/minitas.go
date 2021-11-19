@@ -23,7 +23,7 @@ func (bot *Bot) minitaHandler(ctx *dgc.Ctx) {
 	key, err := bot.pickRandomMinitaID()
 	if err != nil {
 		log.Errorf("error: failed pick a random minita: %v", err)
-		ctx.RespondText("Se ha producido un error interno.")
+		ctx.RespondText("❌ Se ha producido un error interno.")
 		return
 	}
 
@@ -115,7 +115,7 @@ func (bot *Bot) deleteMinitaHandler(ctx *dgc.Ctx) {
 		return
 	}
 	if !found {
-		ctx.RespondText("No existe ninguna minita con ese ID.")
+		ctx.RespondText("❌ No existe ninguna minita con ese ID.")
 		return
 	}
 
