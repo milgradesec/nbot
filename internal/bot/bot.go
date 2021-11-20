@@ -9,7 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/lus/dgc"
 	httpc "github.com/milgradesec/go-libs/http"
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
@@ -24,13 +23,14 @@ type Bot struct {
 	Version string
 	Token   string
 
-	db      *sql.DB
-	s3      *minio.Client
-	client  *http.Client
-	riotapi apiclient.Client
+	commands map[string]commandHandler
+	db       *sql.DB
+	s3       *minio.Client
+	client   *http.Client
+	riotapi  apiclient.Client
 }
 
-func (bot *Bot) Run() { //nolint
+func (bot *Bot) Run() {
 	rand.Seed(time.Now().Unix())
 
 	session, err := discordgo.New("Bot " + bot.Token)
@@ -39,81 +39,8 @@ func (bot *Bot) Run() { //nolint
 	}
 	session.Client = httpc.NewHTTPClient()
 
-	router := dgc.Create(&dgc.Router{
-		Prefixes:         []string{"!"},
-		IgnorePrefixCase: true,
-		BotsAllowed:      false,
-		PingHandler: func(ctx *dgc.Ctx) {
-			ctx.RespondText("PONG!")
-		},
-	})
-
-	router.RegisterCmd(&dgc.Command{
-		Name:       "nbot",
-		IgnoreCase: true,
-		Handler:    bot.quoteHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "quote",
-		IgnoreCase: true,
-		Handler:    bot.quoteHandler,
-		SubCommands: []*dgc.Command{
-			{
-				Name:       "add",
-				IgnoreCase: true,
-				Handler:    bot.addQuoteHandler,
-			},
-		},
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "ping",
-		IgnoreCase: true,
-		Handler: func(ctx *dgc.Ctx) {
-			ctx.RespondText("PONG!")
-		},
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "frases",
-		IgnoreCase: true,
-		Handler:    bot.quotesHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "version",
-		IgnoreCase: true,
-		Handler:    bot.versionHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "putero",
-		IgnoreCase: true,
-		Handler:    bot.ptHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "gafas",
-		IgnoreCase: true,
-		Handler:    bot.gafasHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "elo",
-		IgnoreCase: true,
-		Handler:    bot.eloHandler,
-	})
-	router.RegisterCmd(&dgc.Command{
-		Name:       "minita",
-		IgnoreCase: true,
-		Handler:    bot.minitaHandler,
-		SubCommands: []*dgc.Command{
-			{
-				Name:       "add",
-				IgnoreCase: true,
-				Handler:    bot.addMinitaHandler,
-			},
-			{
-				Name:       "delete",
-				IgnoreCase: true,
-				Handler:    bot.deleteMinitaHandler,
-			}},
-	})
-	router.Initialize(session)
+	bot.registerCommands()
+	session.AddHandler(bot.commandDispatcher)
 
 	db, err := db.OpenDB()
 	if err != nil {
