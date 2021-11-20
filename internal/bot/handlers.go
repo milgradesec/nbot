@@ -36,7 +36,7 @@ func (bot *Bot) gafasHandler(s *discordgo.Session, m *discordgo.MessageCreate, a
 		},
 	})
 
-	s.ChannelMessageSend(m.ChannelID, "Con o sin 👓? 👀👀")
+	s.ChannelMessageSend(m.ChannelID, "Con o sin gafas?")
 }
 
 func (bot *Bot) ptHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
