@@ -12,20 +12,29 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/lus/dgc"
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 )
 
 func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+	if len(args) > 2 {
+		switch args[1] {
+		case "add":
+			bot.addMinitaHandler(s, m, args)
+		case "delete":
+			bot.deleteMinitaHandler(s, m, args)
+		}
+	}
+
 	if len(args) == 1 {
 		key, err := bot.pickRandomMinitaID()
 		if err != nil {
 			log.Errorf("error: failed pick a random minita: %v", err)
-			s.ChannelMessageSend(m.ChannelID, "❌ Se ha producido un error interno.")
+			s.ChannelMessageSend(m.ChannelID, "Se ha producido un error interno.")
 			return
 		}
 
@@ -36,32 +45,23 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, 
 		}
 		s.ChannelMessageSend(m.ChannelID, url)
 	}
-
-	if len(args) > 2 {
-		switch args[1] {
-		case "add":
-		case "delete":
-		}
-	}
 }
 
-func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
-	args := ctx.Arguments
-	if args.Amount() != 1 {
-		ctx.RespondText("Aprendete el comando: !minita add URL")
+func (bot *Bot) addMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+	if len(args) <= 2 {
+		s.ChannelMessageSend(m.ChannelID, "Aprendete el comando: !minita add URL")
 		return
 	}
 
-	msg := ctx.Event.Message
-	if msg.Author.Username != superUser {
-		ctx.RespondText("✋ Tu no tienes permiso para añadir nada. Putero.")
+	if m.Author.Username != superUser {
+		s.ChannelMessageSend(m.ChannelID, "Tu no tienes permiso para añadir nada. Putero.")
 		return
 	}
 
-	urlArg := args.Get(0)
-	u, err := url.Parse(urlArg.Raw())
+	srcURL := strings.Join(args[2:], " ")
+	u, err := url.Parse(srcURL)
 	if err != nil {
-		log.Errorf("error: failed to parse url '%s': %v", urlArg.Raw(), err)
+		log.Errorf("error: failed to parse url '%s': %v", srcURL, err)
 		return
 	}
 
@@ -102,30 +102,28 @@ func (bot *Bot) addMinitaHandler(ctx *dgc.Ctx) {
 		return
 	}
 
-	ctx.RespondText("✔️ Nueva minita añadida correctamente.\nMinita ID: " + key)
+	s.ChannelMessageSend(m.ChannelID, "Nueva minita añadida correctamente.\nMinita ID: "+key)
 }
 
-func (bot *Bot) deleteMinitaHandler(ctx *dgc.Ctx) {
-	args := ctx.Arguments
-	if args.Amount() != 1 {
-		ctx.RespondText("El comando es !minita delete MinitaID")
+func (bot *Bot) deleteMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+	if len(args) <= 2 {
+		s.ChannelMessageSend(m.ChannelID, "El comando es !minita delete MinitaID")
 		return
 	}
 
-	msg := ctx.Event.Message
-	if msg.Author.Username != superUser {
-		ctx.RespondText("✋ Tu no tienes permiso para quitar ninguna minita.")
+	if m.Author.Username != superUser {
+		s.ChannelMessageSend(m.ChannelID, "Tu no tienes permiso para quitar ninguna minita.")
 		return
 	}
 
-	id := args.Get(0).Raw()
+	id := strings.Join(args[2:], " ")
 	found, err := bot.minitaExists(id)
 	if err != nil {
 		log.Errorf("error: failed check if minita with id '%s' already exists: %v", id, err)
 		return
 	}
 	if !found {
-		ctx.RespondText("❌ No existe ninguna minita con ese ID.")
+		s.ChannelMessageSend(m.ChannelID, "No existe ninguna minita con ese ID.")
 		return
 	}
 
@@ -137,7 +135,7 @@ func (bot *Bot) deleteMinitaHandler(ctx *dgc.Ctx) {
 		log.Errorf("error: failed to delete minita image from s3: %v", err)
 	}
 
-	ctx.RespondText("✔️ Minita eliminada correctamente.")
+	s.ChannelMessageSend(m.ChannelID, "Minita eliminada correctamente.")
 }
 
 func (bot *Bot) minitaExists(id string) (bool, error) {
@@ -219,24 +217,6 @@ func (bot *Bot) deleteMinitaIMG(key string) error {
 	return bot.s3.RemoveObject(context.Background(), "nbot", "minitas/"+key, minio.RemoveObjectOptions{})
 }
 
-func fetchImage(client *http.Client, url string) (*http.Response, error) {
-	req, err := http.NewRequestWithContext(context.Background(), "GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Accept", "image/webp,image/jpeg,image/png")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("http status code != 200: " + resp.Status)
-	}
-	return resp, nil
-}
-
 func computeMD5(buf []byte) string {
 	h := md5.New() //nolint
 	h.Write(buf)
@@ -253,4 +233,25 @@ func addContentTypeToKey(contentType, key string) string {
 		return key + ".webp"
 	}
 	return key
+}
+
+func fetchImage(client *http.Client, url string) (*http.Response, error) {
+	// ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	// defer cancel()
+
+	req, err := http.NewRequestWithContext(context.Background(), "GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "image/webp,image/jpeg,image/png")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("http status code != 200: " + resp.Status)
+	}
+	return resp, nil
 }
