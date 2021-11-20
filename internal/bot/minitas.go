@@ -43,7 +43,13 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, 
 			log.Errorf("error: failed to generate presigned url: %v", err)
 			return
 		}
-		s.ChannelMessageSend(m.ChannelID, url)
+		s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+			Title: "Minita",
+			Type:  discordgo.EmbedTypeImage,
+			Image: &discordgo.MessageEmbedImage{
+				URL: url,
+			},
+		})
 	}
 }
 
