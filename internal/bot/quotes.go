@@ -26,17 +26,17 @@ func (bot *Bot) quotesHandler(s *discordgo.Session, m *discordgo.MessageCreate, 
 
 func (bot *Bot) addQuoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if m.Author.Username != superUser {
-		s.ChannelMessageSend(m.ChannelID, "✋ Tu no tienes permiso para añadir nada. Putero.")
+		s.ChannelMessageSend(m.ChannelID, "Tu no tienes permiso para añadir nada. Putero.")
 		return
 	}
 
 	quote := strings.Join(args[2:], " ")
 	err := bot.insertNewQuote(quote)
 	if err != nil {
-		s.ChannelMessageSend(m.ChannelID, "❌ Se ha producido un error al añadir la frase.")
+		s.ChannelMessageSend(m.ChannelID, "Se ha producido un error al añadir la frase.")
 		return
 	}
-	s.ChannelMessageSend(m.ChannelID, "✔️ Frase añadida correctamente.")
+	s.ChannelMessageSend(m.ChannelID, "Frase añadida correctamente.")
 }
 
 func (bot *Bot) getRandomQuote() string {
