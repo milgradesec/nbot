@@ -236,10 +236,10 @@ func addContentTypeToKey(contentType, key string) string {
 }
 
 func fetchImage(client *http.Client, url string) (*http.Response, error) {
-	// ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	// defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-	req, err := http.NewRequestWithContext(context.Background(), "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
