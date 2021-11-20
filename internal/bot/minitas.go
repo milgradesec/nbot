@@ -45,7 +45,6 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, 
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 			Title: "Minita",
-			Type:  discordgo.EmbedTypeImage,
 			Image: &discordgo.MessageEmbedImage{
 				URL: url,
 			},
