@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/bwmarrin/discordgo v0.23.2
 	github.com/jackc/pgx/v4 v4.14.0
-	github.com/lus/dgc v1.1.0
 	github.com/milgradesec/go-libs v0.0.0-20210913211926-a68de7d43f6e
 	github.com/minio/minio-go/v7 v7.0.15
 	github.com/sirupsen/logrus v1.8.1
@@ -25,7 +24,6 @@ require (
 	github.com/jackc/pgtype v1.9.0 // indirect
 	github.com/jackc/puddle v1.2.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/karrick/tparse/v2 v2.8.2 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
@@ -34,7 +32,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/rs/xid v1.3.0 // indirect
-	github.com/zekroTJA/timedmap v1.4.0 // indirect
 	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871 // indirect
 	golang.org/x/net v0.0.0-20211118161319-6a13c67c3ce4 // indirect
 	golang.org/x/sys v0.0.0-20211117180635-dee7805ff2e1 // indirect

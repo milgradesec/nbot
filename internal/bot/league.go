@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
-	"github.com/lus/dgc"
+	"github.com/bwmarrin/discordgo"
 	httpc "github.com/milgradesec/go-libs/http"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuhanfang/riot/apiclient"
@@ -36,14 +37,13 @@ func newRiotAPIClient() (apiclient.Client, error) {
 	return apiclient.New(apikey, httpc.NewHTTPClient(), ratelimit.NewLimiter()), nil
 }
 
-func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
-	args := ctx.Arguments
+func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	var name string
 
-	if args.Amount() == 0 {
+	if len(args) == 1 {
 		name = "MKT L L"
 	} else {
-		name = args.Raw()
+		name = strings.Join(args[1:], " ")
 	}
 
 	msg, err := bot.getLeagueElo(name)
@@ -51,7 +51,7 @@ func (bot *Bot) eloHandler(ctx *dgc.Ctx) {
 		log.Errorf("error: failed to get league data for '%s': %v", name, err)
 		return
 	}
-	ctx.RespondText(msg)
+	s.ChannelMessageSend(m.ChannelID, msg)
 }
 
 func (bot *Bot) getLeagueElo(name string) (string, error) {
