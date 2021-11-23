@@ -39,17 +39,29 @@ func (bot *Bot) addQuoteHandler(s *discordgo.Session, m *discordgo.MessageCreate
 	s.ChannelMessageSend(m.ChannelID, "Frase añadida correctamente.")
 }
 
+func (bot *Bot) insertNewQuote(quote string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	rows, err := bot.dbpool.Query(ctx, `INSERT INTO quotes VALUES ($1)`, quote)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("error: failed to handle db response: %w", err)
+	}
+	return nil
+}
+
 func (bot *Bot) getRandomQuote() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	var quote string
-	row := bot.db.QueryRowContext(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`)
-	if err := row.Scan(&quote); err != nil {
-		log.Errorf("error: failed to handle db response: %v\n", err)
-	}
-
-	if err := row.Err(); err != nil {
+	err := bot.dbpool.QueryRow(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`).Scan(&quote)
+	if err != nil {
 		log.Errorf("error: failed to handle db response: %v\n", err)
 	}
 	return quote
@@ -59,7 +71,7 @@ func (bot *Bot) getAllQuotes() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	rows, err := bot.db.QueryContext(ctx, `SELECT * FROM quotes`)
+	rows, err := bot.dbpool.Query(ctx, `SELECT * FROM quotes`)
 	if err != nil {
 		log.Errorf("error: failed to query db: %v\n", err)
 	}
@@ -81,20 +93,4 @@ func (bot *Bot) getAllQuotes() string {
 		log.Errorf("error: failed to handle db response: %v\n", err)
 	}
 	return msg
-}
-
-func (bot *Bot) insertNewQuote(quote string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	rows, err := bot.db.QueryContext(ctx, `INSERT INTO quotes VALUES ($1)`, quote)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-
-	if err := rows.Err(); err != nil {
-		return fmt.Errorf("error: failed to handle db response: %w", err)
-	}
-	return nil
 }

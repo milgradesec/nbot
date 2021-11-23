@@ -1,7 +1,6 @@
 package bot
 
 import (
-	"database/sql"
 	"math/rand"
 	"net/http"
 	"os"
@@ -9,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jackc/pgx/v4/pgxpool"
 	httpc "github.com/milgradesec/go-libs/http"
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
@@ -24,7 +24,7 @@ type Bot struct {
 	Token   string
 
 	commands map[string]commandHandler
-	db       *sql.DB
+	dbpool   *pgxpool.Pool
 	s3       *minio.Client
 	client   *http.Client
 	riotapi  apiclient.Client
@@ -42,11 +42,11 @@ func (bot *Bot) Run() {
 	bot.registerCommands()
 	session.AddHandler(bot.commandDispatcher)
 
-	db, err := db.OpenDB()
+	dbpool, err := db.OpenDB()
 	if err != nil {
 		log.Fatalf("error: failed to connect to db: %v\n", err)
 	}
-	bot.db = db
+	bot.dbpool = dbpool
 
 	s3client, err := storage.NewS3Client()
 	if err != nil {
