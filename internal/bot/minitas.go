@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"crypto/md5" //nolint
-	"database/sql"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -14,6 +13,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/lus/dgc"
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
@@ -131,16 +131,15 @@ func (bot *Bot) deleteMinitaHandler(ctx *dgc.Ctx) {
 }
 
 func (bot *Bot) minitaExists(id string) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
 	var result int
-	row := bot.db.QueryRow(`SELECT 1 FROM minitas WHERE id = $1`, id)
-	if err := row.Scan(&result); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+	err := bot.dbpool.QueryRow(ctx, `SELECT 1 FROM minitas WHERE id = $1`, id).Scan(&result)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return false, nil
 		}
-		return false, err
-	}
-
-	if err := row.Err(); err != nil {
 		return false, fmt.Errorf("failed to handle db response: %w", err)
 	}
 	return true, nil
@@ -151,13 +150,9 @@ func (bot *Bot) pickRandomMinitaID() (string, error) {
 	defer cancel()
 
 	var id string
-	row := bot.db.QueryRowContext(ctx, `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`)
-	if err := row.Scan(&id); err != nil {
-		return id, fmt.Errorf("failed to handle db response: %w", err)
-	}
-
-	if err := row.Err(); err != nil {
-		return id, fmt.Errorf("failed to handle db response: %w", err)
+	err := bot.dbpool.QueryRow(ctx, `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`).Scan(&id)
+	if err != nil {
+		return "", fmt.Errorf("failed to handle db response: %w", err)
 	}
 	return id, nil
 }
@@ -174,7 +169,7 @@ func (bot *Bot) insertMinitaID(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	rows, err := bot.db.QueryContext(ctx, `INSERT INTO minitas VALUES ($1)`, id)
+	rows, err := bot.dbpool.Query(ctx, `INSERT INTO minitas VALUES ($1)`, id)
 	if err != nil {
 		return err
 	}
@@ -190,16 +185,12 @@ func (bot *Bot) deleteMinitaID(id string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	result, err := bot.db.ExecContext(ctx, `DELETE FROM minitas WHERE id = $1`, id)
+	result, err := bot.dbpool.Exec(ctx, `DELETE FROM minitas WHERE id = $1`, id)
 	if err != nil {
 		return err
 	}
 
-	rows, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if rows == 0 {
+	if rows := result.RowsAffected(); rows == 0 {
 		return errors.New("no rows affected")
 	}
 	return nil

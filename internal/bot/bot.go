@@ -1,7 +1,6 @@
 package bot
 
 import (
-	"database/sql"
 	"math/rand"
 	"net/http"
 	"os"
@@ -25,7 +24,6 @@ type Bot struct {
 	Version string
 	Token   string
 
-	db      *sql.DB
 	dbpool  *pgxpool.Pool
 	s3      *minio.Client
 	client  *http.Client
@@ -117,11 +115,10 @@ func (bot *Bot) Run() { //nolint
 	})
 	router.Initialize(session)
 
-	db, dbpool, err := db.OpenDB()
+	dbpool, err := db.OpenDB()
 	if err != nil {
 		log.Fatalf("error: failed to connect to db: %v\n", err)
 	}
-	bot.db = db
 	bot.dbpool = dbpool
 
 	s3client, err := storage.NewS3Client()

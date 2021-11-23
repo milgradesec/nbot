@@ -38,7 +38,7 @@ func (bot *Bot) insertNewQuote(quote string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	rows, err := bot.db.QueryContext(ctx, `INSERT INTO quotes VALUES ($1)`, quote)
+	rows, err := bot.dbpool.Query(ctx, `INSERT INTO quotes VALUES ($1)`, quote)
 	if err != nil {
 		return err
 	}
@@ -66,7 +66,7 @@ func (bot *Bot) getAllQuotes() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	rows, err := bot.db.QueryContext(ctx, `SELECT * FROM quotes`)
+	rows, err := bot.dbpool.Query(ctx, `SELECT * FROM quotes`)
 	if err != nil {
 		log.Errorf("error: failed to query db: %v\n", err)
 	}
