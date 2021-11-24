@@ -33,8 +33,8 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/rs/xid v1.3.0 // indirect
 	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871 // indirect
-	golang.org/x/net v0.0.0-20211118161319-6a13c67c3ce4 // indirect
-	golang.org/x/sys v0.0.0-20211117180635-dee7805ff2e1 // indirect
+	golang.org/x/net v0.0.0-20211123203042-d83791d6bcd9 // indirect
+	golang.org/x/sys v0.0.0-20211123173158-ef496fb156ab // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/ini.v1 v1.64.0 // indirect
 )
