@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 func (bot *Bot) quoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
@@ -50,7 +50,7 @@ func (bot *Bot) insertNewQuote(quote string) error {
 	defer rows.Close()
 
 	if err := rows.Err(); err != nil {
-		return fmt.Errorf("error: failed to handle db response: %w", err)
+		return fmt.Errorf("failed to handle db response: %w", err)
 	}
 	return nil
 }
@@ -62,7 +62,7 @@ func (bot *Bot) getRandomQuote() string {
 	var quote string
 	err := bot.dbpool.QueryRow(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`).Scan(&quote)
 	if err != nil {
-		log.Errorf("error: failed to handle db response: %v\n", err)
+		log.Error().Msgf("failed to handle db response: %v\n", err)
 	}
 	return quote
 }
@@ -73,7 +73,7 @@ func (bot *Bot) getAllQuotes() string {
 
 	rows, err := bot.dbpool.Query(ctx, `SELECT * FROM quotes`)
 	if err != nil {
-		log.Errorf("error: failed to query db: %v\n", err)
+		log.Error().Msgf("failed to query db: %v\n", err)
 	}
 	defer rows.Close()
 
@@ -82,7 +82,7 @@ func (bot *Bot) getAllQuotes() string {
 		var quote string
 		err = rows.Scan(&quote)
 		if err != nil {
-			log.Errorf("error: failed to handle db response: %v\n", err)
+			log.Error().Msgf("failed to handle db response: %v\n", err)
 			break
 		}
 		msg += quote
@@ -90,7 +90,7 @@ func (bot *Bot) getAllQuotes() string {
 	}
 
 	if err := rows.Err(); err != nil {
-		log.Errorf("error: failed to handle db response: %v\n", err)
+		log.Error().Msgf("failed to handle db response: %v\n", err)
 	}
 	return msg
 }

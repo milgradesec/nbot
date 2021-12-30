@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	_ "github.com/jackc/pgx/v4/stdlib"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 func OpenDB() (*pgxpool.Pool, error) { //nolint
@@ -48,7 +48,7 @@ func OpenDB() (*pgxpool.Pool, error) { //nolint
 		if !found {
 			return nil, errors.New("POSTGRES_DB_PASSWORD env variable not set")
 		}
-		log.Warnln("Using unencrypted DB password from env, consider switching to POSTGRES_DB_PASSWORD_FILE")
+		log.Warn().Msg("Using unencrypted DB password from env, consider switching to POSTGRES_DB_PASSWORD_FILE")
 	}
 
 	rootCA, found = os.LookupEnv("POSTGRES_SSL_ROOT_CERT")

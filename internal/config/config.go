@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 func GetToken() (string, bool) {
@@ -19,7 +19,7 @@ func GetToken() (string, bool) {
 
 	token, found := os.LookupEnv("DISCORD_BOT_TOKEN")
 	if found {
-		log.Warnln("Using unencrypted Token from env, consider switching to DISCORD_BOT_TOKEN_FILE")
+		log.Warn().Msg("Using unencrypted Token from env, consider switching to DISCORD_BOT_TOKEN_FILE")
 		return token, true
 	}
 	return "", false

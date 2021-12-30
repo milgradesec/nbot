@@ -11,7 +11,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	httpc "github.com/milgradesec/go-libs/http"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/yuhanfang/riot/apiclient"
 	"github.com/yuhanfang/riot/constants/region"
 	"github.com/yuhanfang/riot/ratelimit"
@@ -31,7 +31,7 @@ func newRiotAPIClient() (apiclient.Client, error) {
 		if !found {
 			return nil, errors.New("RIOT_APIKEY env variable not set")
 		}
-		log.Warnln("Using unencrypted Riot API Key from env, consider switching to RIOT_APIKEY_FILE")
+		log.Warn().Msg("Using unencrypted Riot API Key from env, consider switching to RIOT_APIKEY_FILE")
 	}
 
 	return apiclient.New(apikey, httpc.NewHTTPClient(), ratelimit.NewLimiter()), nil
@@ -48,7 +48,7 @@ func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate, arg
 
 	msg, err := bot.getLeagueElo(name)
 	if err != nil {
-		log.Errorf("error: failed to get league data for '%s': %v", name, err)
+		log.Error().Msgf("failed to get league data for '%s': %v", name, err)
 		return
 	}
 	s.ChannelMessageSend(m.ChannelID, msg)

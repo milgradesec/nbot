@@ -6,7 +6,7 @@ import (
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 func NewS3Client() (*minio.Client, error) {
@@ -28,7 +28,7 @@ func NewS3Client() (*minio.Client, error) {
 		if !found {
 			return nil, errors.New("S3_ACCESS_KEY env variable not set")
 		}
-		log.Warnln("Using unencrypted S3 access key from env, consider switching to S3_ACCESS_KEY_FILE")
+		log.Warn().Msg("Using unencrypted S3 access key from env, consider switching to S3_ACCESS_KEY_FILE")
 	}
 
 	secretKeyFile, found := os.LookupEnv("S3_SECRET_KEY_FILE")
@@ -43,7 +43,7 @@ func NewS3Client() (*minio.Client, error) {
 		if !found {
 			return nil, errors.New("S3_SECRET_KEY env variable not set")
 		}
-		log.Warnln("Using unencrypted S3 secret key from env, consider switching to S3_SECRET_KEY_FILE")
+		log.Warn().Msg("Using unencrypted S3 secret key from env, consider switching to S3_SECRET_KEY_FILE")
 	}
 
 	client, err := minio.New("s3.paesa.es", &minio.Options{

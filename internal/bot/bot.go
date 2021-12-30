@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	httpc "github.com/milgradesec/go-libs/http"
 	"github.com/minio/minio-go/v7"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/yuhanfang/riot/apiclient"
 
 	"github.com/bwmarrin/discordgo"
@@ -35,7 +35,7 @@ func (bot *Bot) Run() {
 
 	session, err := discordgo.New("Bot " + bot.Token)
 	if err != nil {
-		log.Fatalf("error: error creating discord session: %v\n", err)
+		log.Fatal().Msgf("error creating discord session: %v\n", err)
 	}
 	session.Client = httpc.NewHTTPClient()
 
@@ -44,13 +44,13 @@ func (bot *Bot) Run() {
 
 	dbpool, err := db.OpenDB()
 	if err != nil {
-		log.Fatalf("error: failed to connect to db: %v\n", err)
+		log.Fatal().Msgf("failed to connect to db: %v\n", err)
 	}
 	bot.dbpool = dbpool
 
 	s3client, err := storage.NewS3Client()
 	if err != nil {
-		log.Fatalf("error: failed to create s3 client: %v\n", err)
+		log.Fatal().Msgf("failed to create s3 client: %v\n", err)
 	}
 	bot.s3 = s3client
 
@@ -58,13 +58,13 @@ func (bot *Bot) Run() {
 
 	riotapi, err := newRiotAPIClient()
 	if err != nil {
-		log.Fatalf("error: failed to create riot api client: %v\n", err)
+		log.Fatal().Msgf("failed to create riot api client: %v\n", err)
 	}
 	bot.riotapi = riotapi
 
 	err = session.Open()
 	if err != nil {
-		log.Fatalf("error: failed to open websocket connection to discord: %v\n", err)
+		log.Fatal().Msgf("failed to open websocket connection to discord: %v\n", err)
 	}
 
 	sc := make(chan os.Signal, 1)

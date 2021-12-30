@@ -2,13 +2,13 @@ package bot
 
 import (
 	"github.com/bwmarrin/discordgo"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 func (bot *Bot) gafasHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	url, err := bot.generatePresignedURL("img/congafas.webp")
 	if err != nil {
-		log.Errorf("error: failed to generate presigned url: %v\n", err)
+		log.Error().Msgf("failed to generate presigned url: %v\n", err)
 		return
 	}
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
@@ -23,7 +23,7 @@ func (bot *Bot) gafasHandler(s *discordgo.Session, m *discordgo.MessageCreate, a
 
 	url, err = bot.generatePresignedURL("img/singafas.webp")
 	if err != nil {
-		log.Errorf("error: failed to generate presigned url: %v\n", err)
+		log.Error().Msgf("failed to generate presigned url: %v\n", err)
 		return
 	}
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
@@ -42,7 +42,7 @@ func (bot *Bot) gafasHandler(s *discordgo.Session, m *discordgo.MessageCreate, a
 func (bot *Bot) ptHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	url, err := bot.generatePresignedURL("clips/putero.mp4")
 	if err != nil {
-		log.Errorf("error: failed to generate presigned url: %v\n", err)
+		log.Error().Msgf("failed to generate presigned url: %v\n", err)
 		return
 	}
 	s.ChannelMessageSend(m.ChannelID, url)
