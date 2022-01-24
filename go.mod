@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/bwmarrin/discordgo v0.23.2
 	github.com/jackc/pgx/v4 v4.14.1
-	github.com/milgradesec/go-libs v0.0.0-20211222013716-6f06700a070b
+	github.com/milgradesec/go-libs v0.0.0-20220107183211-5e1051bbde19
 	github.com/minio/minio-go/v7 v7.0.21
 	github.com/rs/zerolog v1.26.1
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
