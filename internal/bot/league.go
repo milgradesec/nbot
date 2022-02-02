@@ -48,7 +48,7 @@ func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate, arg
 
 	msg, err := bot.getLeagueElo(name)
 	if err != nil {
-		log.Error().Msgf("failed to get league data for '%s': %v", name, err)
+		log.Error().Err(err).Msgf("failed to get league data for '%s'", name)
 		return
 	}
 	s.ChannelMessageSend(m.ChannelID, msg)

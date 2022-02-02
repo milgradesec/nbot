@@ -62,7 +62,7 @@ func (bot *Bot) getRandomQuote() string {
 	var quote string
 	err := bot.dbpool.QueryRow(ctx, `SELECT quote FROM quotes ORDER BY RANDOM() LIMIT 1`).Scan(&quote)
 	if err != nil {
-		log.Error().Msgf("failed to handle db response: %v\n", err)
+		log.Error().Err(err).Msg("failed to handle db response")
 	}
 	return quote
 }
@@ -73,7 +73,7 @@ func (bot *Bot) getAllQuotes() string {
 
 	rows, err := bot.dbpool.Query(ctx, `SELECT * FROM quotes`)
 	if err != nil {
-		log.Error().Msgf("failed to query db: %v\n", err)
+		log.Error().Err(err).Msgf("failed to query db")
 	}
 	defer rows.Close()
 
@@ -82,7 +82,7 @@ func (bot *Bot) getAllQuotes() string {
 		var quote string
 		err = rows.Scan(&quote)
 		if err != nil {
-			log.Error().Msgf("failed to handle db response: %v\n", err)
+			log.Error().Err(err).Msg("failed to handle db response")
 			break
 		}
 		msg += quote
@@ -90,7 +90,7 @@ func (bot *Bot) getAllQuotes() string {
 	}
 
 	if err := rows.Err(); err != nil {
-		log.Error().Msgf("failed to handle db response: %v\n", err)
+		log.Error().Err(err).Msg("failed to handle db response")
 	}
 	return msg
 }

@@ -33,14 +33,14 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, 
 	if len(args) == 1 {
 		key, err := bot.pickRandomMinitaID()
 		if err != nil {
-			log.Error().Msgf("failed pick a random minita: %v", err)
+			log.Error().Err(err).Msg("failed pick a random minita")
 			s.ChannelMessageSend(m.ChannelID, "Se ha producido un error interno.")
 			return
 		}
 
 		url, err := bot.generatePresignedURL("minitas/" + key)
 		if err != nil {
-			log.Error().Msgf("failed to generate presigned url: %v", err)
+			log.Error().Err(err).Msg("failed to generate presigned")
 			return
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
@@ -66,20 +66,20 @@ func (bot *Bot) addMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreat
 	srcURL := strings.Join(args[2:], " ")
 	u, err := url.Parse(srcURL)
 	if err != nil {
-		log.Error().Msgf("failed to parse url '%s': %v", srcURL, err)
+		log.Error().Err(err).Msgf("failed to parse url '%s'", srcURL)
 		return
 	}
 
 	resp, err := fetchImage(bot.client, u.String())
 	if err != nil {
-		log.Error().Msgf("failed to fetch image from source: %v", err)
+		log.Error().Err(err).Msg("failed to fetch image from source")
 		return
 	}
 	defer resp.Body.Close()
 
 	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Error().Msgf("failed to read response body: %v", err)
+		log.Error().Err(err).Msg("failed to read response body")
 		return
 	}
 	h := computeMD5(buf)
@@ -93,7 +93,7 @@ func (bot *Bot) addMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreat
 
 	err = bot.insertMinitaID(key)
 	if err != nil {
-		log.Error().Msgf("failed to insert minita with id '%s': %v", key, err)
+		log.Error().Err(err).Msgf("failed to insert minita with id '%s'", key)
 		return
 	}
 
@@ -103,7 +103,7 @@ func (bot *Bot) addMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreat
 	}
 	err = bot.uploadMinitaIMG(key, bytes.NewReader(buf), int64(len(buf)), opts)
 	if err != nil {
-		log.Error().Msgf("error uploading image to s3: %v", err)
+		log.Error().Err(err).Msgf("error uploading image to s3")
 		return
 	}
 
@@ -124,7 +124,7 @@ func (bot *Bot) deleteMinitaHandler(s *discordgo.Session, m *discordgo.MessageCr
 	id := strings.Join(args[2:], " ")
 	found, err := bot.minitaExists(id)
 	if err != nil {
-		log.Error().Msgf("failed check if minita with id '%s' already exists: %v", id, err)
+		log.Error().Err(err).Msgf("failed check if minita with id '%s' already exists", id)
 		return
 	}
 	if !found {
@@ -133,11 +133,11 @@ func (bot *Bot) deleteMinitaHandler(s *discordgo.Session, m *discordgo.MessageCr
 	}
 
 	if err = bot.deleteMinitaID(id); err != nil {
-		log.Error().Msgf("failed to delete minita with id '%s': %v", id, err)
+		log.Error().Err(err).Msgf("failed to delete minita with id '%s'", id)
 	}
 
 	if err = bot.deleteMinitaIMG(id); err != nil {
-		log.Error().Msgf("failed to delete minita image from s3: %v", err)
+		log.Error().Err(err).Msgf("failed to delete minita image from s3")
 	}
 
 	s.ChannelMessageSend(m.ChannelID, "Minita eliminada correctamente.")
