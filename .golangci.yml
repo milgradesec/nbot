@@ -64,5 +64,6 @@ linters-settings:
       - comando
 
 run:
+  tests: false
   skip-dirs:
     - testdata
