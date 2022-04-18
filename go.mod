@@ -3,7 +3,7 @@ module github.com/milgradesec/nbot
 go 1.17
 
 require (
-	github.com/bwmarrin/discordgo v0.24.0
+	github.com/bwmarrin/discordgo v0.25.0
 	github.com/jackc/pgx/v4 v4.15.0
 	github.com/milgradesec/go-libs v0.0.0-20220316013212-cfeb9e128291
 	github.com/minio/minio-go/v7 v7.0.24
