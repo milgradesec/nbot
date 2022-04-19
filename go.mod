@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/bwmarrin/discordgo v0.25.0
 	github.com/jackc/pgx/v4 v4.15.0
-	github.com/milgradesec/go-libs v0.0.0-20220316013212-cfeb9e128291
+	github.com/milgradesec/go-libs v0.0.0-20220408230407-681d9edb5561
 	github.com/minio/minio-go/v7 v7.0.24
 	github.com/rs/zerolog v1.26.1
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
@@ -33,9 +33,9 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/rs/xid v1.4.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
-	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064 // indirect
-	golang.org/x/net v0.0.0-20220325170049-de3da57026de // indirect
-	golang.org/x/sys v0.0.0-20220329152356-43be30ef3008 // indirect
+	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
+	golang.org/x/net v0.0.0-20220418201149-a630d4f3e7a2 // indirect
+	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 )
