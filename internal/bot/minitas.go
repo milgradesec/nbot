@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/jackc/pgx/v4"
@@ -144,11 +143,8 @@ func (bot *Bot) deleteMinitaHandler(s *discordgo.Session, m *discordgo.MessageCr
 }
 
 func (bot *Bot) minitaExists(id string) (bool, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-
 	var result int
-	err := bot.dbpool.QueryRow(ctx, `SELECT 1 FROM minitas WHERE id = $1`, id).Scan(&result)
+	err := bot.dbpool.QueryRow(context.TODO(), `SELECT 1 FROM minitas WHERE id = $1`, id).Scan(&result)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return false, nil
@@ -159,11 +155,8 @@ func (bot *Bot) minitaExists(id string) (bool, error) {
 }
 
 func (bot *Bot) pickRandomMinitaID() (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-
 	var id string
-	err := bot.dbpool.QueryRow(ctx, `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`).Scan(&id)
+	err := bot.dbpool.QueryRow(context.TODO(), `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`).Scan(&id)
 	if err != nil {
 		return "", fmt.Errorf("failed to handle db response: %w", err)
 	}
@@ -179,10 +172,7 @@ func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts mini
 }
 
 func (bot *Bot) insertMinitaID(id string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-
-	rows, err := bot.dbpool.Query(ctx, `INSERT INTO minitas VALUES ($1)`, id)
+	rows, err := bot.dbpool.Query(context.TODO(), `INSERT INTO minitas VALUES ($1)`, id)
 	if err != nil {
 		return err
 	}
@@ -195,10 +185,7 @@ func (bot *Bot) insertMinitaID(id string) error {
 }
 
 func (bot *Bot) deleteMinitaID(id string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-
-	result, err := bot.dbpool.Exec(ctx, `DELETE FROM minitas WHERE id = $1`, id)
+	result, err := bot.dbpool.Exec(context.TODO(), `DELETE FROM minitas WHERE id = $1`, id)
 	if err != nil {
 		return err
 	}
@@ -232,10 +219,7 @@ func addContentTypeToKey(contentType, key string) string {
 }
 
 func fetchImage(client *http.Client, url string) (*http.Response, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(context.TODO(), "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
