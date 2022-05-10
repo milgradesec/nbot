@@ -23,3 +23,7 @@ cmd/nbot/__debug_bin
 
 dist/
 .dccache
+
+# VS Code
+.vscode
+!launch.json
