@@ -11,19 +11,18 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Debug binary
+cmd/nbot/__debug_bin
+
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
 # Env files
 .env
 
-internal/bot/bot_test.go
-target/golist.json
-cmd/nbot/__debug_bin
-
-dist/
-.dccache
-
 # VS Code
 .vscode
 !launch.json
+
+target/golist.json
+dist/
