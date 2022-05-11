@@ -9,12 +9,23 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const (
+	defaultS3Endpoint = "s3.paesa.es"
+)
+
 func NewS3Client() (*minio.Client, error) {
 	var (
+		endpoint  string
 		accessKey string
 		secretKey string
 		found     bool
 	)
+
+	endpoint, found = os.LookupEnv("S3_ENDPOINT_URL")
+	if !found {
+		endpoint = defaultS3Endpoint
+		log.Warn().Msg("S3_ENDPOINT_URL not set, using default endpoint: '" + defaultS3Endpoint + "'")
+	}
 
 	accessKeyFile, found := os.LookupEnv("S3_ACCESS_KEY_FILE")
 	if found {
@@ -46,7 +57,7 @@ func NewS3Client() (*minio.Client, error) {
 		log.Warn().Msg("Using unencrypted S3 secret key from env, consider switching to S3_SECRET_KEY_FILE")
 	}
 
-	client, err := minio.New("s3.paesa.es", &minio.Options{
+	client, err := minio.New(endpoint, &minio.Options{
 		Region: "eu-west-1",
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: true,
