@@ -14,32 +14,25 @@ const (
 	defaultS3Region   = "eu-west-1"
 )
 
-func NewS3Client() (*minio.Client, error) { //nolint
+func NewS3Client() (*minio.Client, error) {
 	var (
 		endpoint  string
 		region    string
-		useTLS    bool
 		accessKey string
 		secretKey string
 		found     bool
 	)
 
-	endpoint, found = os.LookupEnv("S3_ENDPOINT_URL")
+	endpoint, found = os.LookupEnv("S3_ENDPOINT")
 	if !found {
 		endpoint = defaultS3Endpoint
-		log.Warn().Msg("S3_ENDPOINT_URL not set, using default endpoint: '" + defaultS3Endpoint + "'")
+		log.Warn().Msg("S3_ENDPOINT not set, using default endpoint: '" + defaultS3Endpoint + "'")
 	}
 
-	region, found = os.LookupEnv("S3_DEFAULT_REGION")
+	region, found = os.LookupEnv("S3_REGION")
 	if !found {
 		region = defaultS3Region
-		log.Warn().Msg("S3_DEFAULT_REGION not set, using: '" + defaultS3Region + "'")
-	}
-
-	if os.Getenv("S3_ENDPOINT_INSECURE") != "" {
-		useTLS = true
-	} else {
-		useTLS = false
+		log.Warn().Msg("S3_REGION not set, using default region: '" + defaultS3Region + "'")
 	}
 
 	accessKeyFile, found := os.LookupEnv("S3_ACCESS_KEY_FILE")
@@ -75,7 +68,7 @@ func NewS3Client() (*minio.Client, error) { //nolint
 	client, err := minio.New(endpoint, &minio.Options{
 		Region: region,
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
-		Secure: useTLS,
+		Secure: true,
 	})
 	if err != nil {
 		return nil, err
