@@ -24,4 +24,4 @@ jobs:
         run: go build -v ./...
 
       - name: Docker Build
-        run: docker build . -f Dockerfile
+        run: docker build . -f build.Dockerfile
