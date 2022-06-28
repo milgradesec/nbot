@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.25.0
 	github.com/jackc/pgx/v4 v4.16.1
 	github.com/milgradesec/go-libs v0.0.0-20220425213745-f59aa77e7673
-	github.com/minio/minio-go/v7 v7.0.29
+	github.com/minio/minio-go/v7 v7.0.30
 	github.com/rs/zerolog v1.27.0
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
 )
@@ -30,7 +30,6 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
-	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/rs/xid v1.4.0 // indirect
