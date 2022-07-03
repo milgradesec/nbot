@@ -78,6 +78,6 @@ func (bot *Bot) getLeagueElo(name string) (string, error) {
 	return "", nil
 }
 
-var (
+const (
 	defaultSummonerName = "eLL humilde"
 )
