@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func OpenDB() (*pgxpool.Pool, error) { //nolint
+func Open() (*pgxpool.Pool, error) { //nolint
 	var (
 		dbHost     string
 		dbName     string

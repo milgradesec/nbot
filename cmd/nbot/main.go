@@ -23,7 +23,7 @@ func main() {
 
 	token, found := config.GetToken()
 	if !found {
-		log.Fatal().Msgf("error: Discord token not found")
+		log.Fatal().Msgf("Discord token not found")
 	}
 
 	bot := &bot.Bot{

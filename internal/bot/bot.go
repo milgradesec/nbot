@@ -42,7 +42,7 @@ func (bot *Bot) Run() {
 	bot.registerCommands()
 	session.AddHandler(bot.commandDispatcher)
 
-	dbpool, err := db.OpenDB()
+	dbpool, err := db.Open()
 	if err != nil {
 		log.Fatal().Err(err).Msgf("failed to connect to db")
 	}
@@ -64,7 +64,7 @@ func (bot *Bot) Run() {
 
 	err = session.Open()
 	if err != nil {
-		log.Fatal().Err(err).Msgf("failed to open websocket connection to discord")
+		log.Fatal().Err(err).Msgf("failed to open websocket connection to Discord")
 	}
 
 	sc := make(chan os.Signal, 1)

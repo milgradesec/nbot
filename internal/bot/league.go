@@ -41,7 +41,7 @@ func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate, arg
 	var name string
 
 	if len(args) == 1 {
-		name = "MKT L L"
+		name = defaultSummonerName
 	} else {
 		name = strings.Join(args[1:], " ")
 	}
@@ -77,3 +77,7 @@ func (bot *Bot) getLeagueElo(name string) (string, error) {
 	}
 	return "", nil
 }
+
+var (
+	defaultSummonerName = "eLL humilde"
+)
