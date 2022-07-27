@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/milgradesec/nbot/db"
-	"github.com/minio/minio-go/v7"
+	"github.com/milgradesec/nbot/s3"
 	"github.com/rs/zerolog/log"
 	"github.com/yuhanfang/riot/apiclient"
 
@@ -22,7 +22,6 @@ type Bot struct {
 
 	s       *discordgo.Session
 	cmd     map[string]commandHandler
-	s3      *minio.Client
 	client  *http.Client
 	riotapi apiclient.Client
 }
@@ -46,10 +45,10 @@ func NewBot(token string, version string) (*Bot, error) {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	// bot.s3, err = storage.NewS3Client()
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to create s3 client: %w", err)
-	// }
+	s3.Client, err = s3.NewClient()
+	if err != nil {
+		return nil, fmt.Errorf("failed to create s3 client: %w", err)
+	}
 
 	// bot.client = httpc.NewHTTPClient()
 

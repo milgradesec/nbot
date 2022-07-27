@@ -16,6 +16,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/jackc/pgx/v4"
 	"github.com/milgradesec/nbot/db"
+	"github.com/milgradesec/nbot/s3"
 	"github.com/minio/minio-go/v7"
 	"github.com/rs/zerolog/log"
 )
@@ -38,7 +39,7 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, 
 			return
 		}
 
-		url, err := bot.generatePresignedURL("minitas/" + key)
+		url, err := s3.GeneratePresignedURL("minitas/" + key)
 		if err != nil {
 			log.Error().Err(err).Msg("failed to generate presigned")
 			return
@@ -165,7 +166,7 @@ func (bot *Bot) pickRandomMinitaID() (string, error) {
 }
 
 func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts minio.PutObjectOptions) error {
-	_, err := bot.s3.PutObject(context.Background(), "nbot", "minitas/"+key, src, size, opts)
+	_, err := s3.Client.PutObject(context.Background(), "nbot", "minitas/"+key, src, size, opts)
 	if err != nil {
 		return err
 	}
@@ -198,7 +199,7 @@ func (bot *Bot) deleteMinitaID(id string) error {
 }
 
 func (bot *Bot) deleteMinitaIMG(key string) error {
-	return bot.s3.RemoveObject(context.Background(), "nbot", "minitas/"+key, minio.RemoveObjectOptions{})
+	return s3.Client.RemoveObject(context.Background(), "nbot", "minitas/"+key, minio.RemoveObjectOptions{})
 }
 
 func computeMD5(buf []byte) string {
