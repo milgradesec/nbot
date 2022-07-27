@@ -6,4 +6,4 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/milgradesec/nbot.svg)](https://pkg.go.dev/github.com/milgradesec/nbot)
 ![GitHub](https://img.shields.io/github/license/milgradesec/nbot)
 
-Bot de Discord con frases de alguien no muy sabio
+Bot de Discord con escasa utilidad
