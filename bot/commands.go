@@ -25,14 +25,14 @@ func (bot *Bot) registerCommands() {
 		"!elo":    bot.eloHandler,
 		"!minita": bot.minitaHandler,
 	}
-	bot.commands = commands
+	bot.cmd = commands
 }
 
 func (bot *Bot) commandDispatcher(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if strings.HasPrefix(m.Message.Content, "!") {
 		args := strings.Split(m.Message.Content, " ")
 
-		handler, found := bot.commands[args[0]]
+		handler, found := bot.cmd[args[0]]
 		if found {
 			handler(s, m, args)
 		}

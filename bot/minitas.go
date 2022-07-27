@@ -15,6 +15,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/jackc/pgx/v4"
+	"github.com/milgradesec/nbot/db"
 	"github.com/minio/minio-go/v7"
 	"github.com/rs/zerolog/log"
 )
@@ -144,7 +145,7 @@ func (bot *Bot) deleteMinitaHandler(s *discordgo.Session, m *discordgo.MessageCr
 
 func (bot *Bot) minitaExists(id string) (bool, error) {
 	var result int
-	err := bot.dbpool.QueryRow(context.Background(), `SELECT 1 FROM minitas WHERE id = $1`, id).Scan(&result)
+	err := db.Conn.QueryRow(context.Background(), `SELECT 1 FROM minitas WHERE id = $1`, id).Scan(&result)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return false, nil
@@ -156,7 +157,7 @@ func (bot *Bot) minitaExists(id string) (bool, error) {
 
 func (bot *Bot) pickRandomMinitaID() (string, error) {
 	var id string
-	err := bot.dbpool.QueryRow(context.Background(), `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`).Scan(&id)
+	err := db.Conn.QueryRow(context.Background(), `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`).Scan(&id)
 	if err != nil {
 		return "", fmt.Errorf("failed to handle db response: %w", err)
 	}
@@ -172,7 +173,7 @@ func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts mini
 }
 
 func (bot *Bot) insertMinitaID(id string) error {
-	rows, err := bot.dbpool.Query(context.Background(), `INSERT INTO minitas VALUES ($1)`, id)
+	rows, err := db.Conn.Query(context.Background(), `INSERT INTO minitas VALUES ($1)`, id)
 	if err != nil {
 		return err
 	}
@@ -185,7 +186,7 @@ func (bot *Bot) insertMinitaID(id string) error {
 }
 
 func (bot *Bot) deleteMinitaID(id string) error {
-	result, err := bot.dbpool.Exec(context.Background(), `DELETE FROM minitas WHERE id = $1`, id)
+	result, err := db.Conn.Exec(context.Background(), `DELETE FROM minitas WHERE id = $1`, id)
 	if err != nil {
 		return err
 	}

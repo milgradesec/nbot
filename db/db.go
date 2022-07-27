@@ -3,73 +3,67 @@ package db
 import (
 	"context"
 	"errors"
-	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	_ "github.com/jackc/pgx/v4/stdlib"
-	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 )
 
-func Open() (*pgxpool.Pool, error) { //nolint
+var (
+	Conn *pgxpool.Pool
+)
+
+func Open() error {
 	var (
-		dbHost     string
-		dbName     string
-		dbUser     string
-		dbPassword string
-		rootCA     string
-		sslMode    string
-		found      bool
+		host     string
+		database string
+		username string
+		password string
+		sslMode  string
+		//rootCA   string
 	)
 
-	dbHost, found = os.LookupEnv("POSTGRES_HOST")
-	if !found {
-		return nil, errors.New("POSTGRES_HOST env variable not set")
+	if !viper.IsSet("POSTGRES_HOST") {
+		return errors.New("NBOT_POSTGRES_HOST not set")
 	}
+	host = viper.GetString("POSTGRES_HOST")
 
-	dbName, found = os.LookupEnv("POSTGRES_DB")
-	if !found {
-		return nil, errors.New("POSTGRES_DB env variable not set")
+	if !viper.IsSet("POSTGRES_DB") {
+		return errors.New("NBOT_POSTGRES_DB not set")
 	}
+	database = viper.GetString("POSTGRES_DB")
 
-	dbUser, found = os.LookupEnv("POSTGRES_USER")
-	if !found {
-		return nil, errors.New("POSTGRES_USER env variable not set")
+	if !viper.IsSet("POSTGRES_USER") {
+		return errors.New("NBOT_POSTGRES_USER not set")
 	}
+	username = viper.GetString("POSTGRES_USER")
 
-	dbPassFile, found := os.LookupEnv("POSTGRES_DB_PASSWORD_FILE")
-	if found {
-		buf, err := os.ReadFile(dbPassFile)
-		if err != nil {
-			return nil, err
-		}
-		dbPassword = string(buf)
+	if !viper.IsSet("POSTGRES_DB_PASSWORD") {
+		return errors.New("NBOT_POSTGRES_DB_PASSWORD not set")
+	}
+	password = viper.GetString("POSTGRES_DB_PASSWORD")
+
+	if !viper.IsSet("POSTGRES_SSL_MODE") {
+		sslMode = "verify-full"
 	} else {
-		dbPassword, found = os.LookupEnv("POSTGRES_DB_PASSWORD")
-		if !found {
-			return nil, errors.New("POSTGRES_DB_PASSWORD env variable not set")
-		}
-		log.Warn().Msg("Using unencrypted DB password from env, consider switching to POSTGRES_DB_PASSWORD_FILE")
+		sslMode = viper.GetString("POSTGRES_SSL_MODE")
 	}
 
-	rootCA, found = os.LookupEnv("POSTGRES_SSL_ROOT_CERT")
+	/*rootCA, found = os.LookupEnv("POSTGRES_SSL_ROOT_CERT")
 	if !found {
 		return nil, errors.New("POSTGRES_SSL_ROOT_CERT env variable not set")
-	}
+	}*/
 
-	sslMode, found = os.LookupEnv("POSTGRES_SSL_MODE")
-	if !found {
-		sslMode = "verify-full"
-	}
-
-	connStr := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + "/" + dbName + "?sslmode=" + sslMode + "&sslrootcert=" + rootCA
+	connStr := "postgres://" + username + ":" + password + "@" + host + "/" + database + "?sslmode=" + sslMode // + "&sslrootcert=" + rootCA
 	dbpool, err := pgxpool.Connect(context.Background(), connStr)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	Conn = dbpool
 
 	err = dbpool.Ping(context.Background())
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return dbpool, nil
+	return nil
 }

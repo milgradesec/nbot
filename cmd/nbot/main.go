@@ -6,9 +6,9 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 
 	"github.com/milgradesec/nbot/bot"
-	"github.com/milgradesec/nbot/config"
 )
 
 var (
@@ -21,14 +21,14 @@ func main() {
 	log.Info().Msgf("Nbot %s", Version)
 	log.Info().Msgf("%s/%s %s", runtime.GOOS, runtime.GOARCH, runtime.Version())
 
-	token, found := config.GetToken()
-	if !found {
-		log.Fatal().Msgf("Discord token not found")
+	if !viper.IsSet("DISCORD_TOKEN") {
+		log.Fatal().Msg("NBOT_DISCORD_TOKEN not set")
 	}
+	token := viper.GetString("DISCORD_TOKEN")
 
-	bot := &bot.Bot{
-		Version: Version,
-		Token:   token,
+	bot, err := bot.NewBot(token, Version)
+	if err != nil {
+		log.Fatal().Err(err).Msgf("failed to create bot")
 	}
 	bot.Run()
 }
