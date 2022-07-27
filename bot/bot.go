@@ -64,8 +64,7 @@ func NewBot(token string, version string) (*Bot, error) {
 func (bot *Bot) Run() {
 	rand.Seed(time.Now().Unix())
 
-	err := bot.s.Open()
-	if err != nil {
+	if err := bot.s.Open(); err != nil {
 		log.Fatal().Err(err).Msgf("failed to create a websocket connection to Discord")
 	}
 
