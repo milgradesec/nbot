@@ -15,8 +15,8 @@ import (
 	"github.com/yuhanfang/riot/apiclient"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/milgradesec/nbot/internal/db"
-	"github.com/milgradesec/nbot/internal/storage"
+	"github.com/milgradesec/nbot/db"
+	"github.com/milgradesec/nbot/storage"
 )
 
 type Bot struct {

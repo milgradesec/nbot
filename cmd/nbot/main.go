@@ -7,8 +7,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/milgradesec/nbot/internal/bot"
-	"github.com/milgradesec/nbot/internal/config"
+	"github.com/milgradesec/nbot/bot"
+	"github.com/milgradesec/nbot/config"
 )
 
 var (
