@@ -1,17 +1,14 @@
-package bot
+package quotes
 
 import (
 	"context"
-	"fmt"
-	"strings"
 	"time"
 
-	"github.com/bwmarrin/discordgo"
 	"github.com/milgradesec/nbot/db"
 	"github.com/rs/zerolog/log"
 )
 
-func (bot *Bot) quoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+/*func (bot *Bot) quoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 1 {
 		s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
 	}
@@ -56,7 +53,8 @@ func (bot *Bot) insertNewQuote(quote string) error {
 	return nil
 }
 
-func (bot *Bot) getRandomQuote() string {
+*/
+func GetRandom() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -68,7 +66,7 @@ func (bot *Bot) getRandomQuote() string {
 	return quote
 }
 
-func (bot *Bot) getAllQuotes() string {
+func GetAll() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

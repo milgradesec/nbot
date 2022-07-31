@@ -63,7 +63,7 @@ func NewClient() (*minio.Client, error) {
 	return client, nil
 }
 
-func GeneratePresignedURL(objectKey string) (string, error) {
+func PresignedURL(objectKey string) (string, error) {
 	presignedURL, err := Client.PresignedGetObject(context.Background(), bucketName, objectKey, time.Hour*8, make(url.Values))
 	if err != nil {
 		return "", err

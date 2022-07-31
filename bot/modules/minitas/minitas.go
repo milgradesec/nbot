@@ -1,27 +1,35 @@
-package bot
+package minitas
 
 import (
-	"bytes"
 	"context"
-	"crypto/md5" //nolint
-	"encoding/hex"
-	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"net/http"
-	"net/url"
-	"strings"
 
-	"github.com/bwmarrin/discordgo"
-	"github.com/jackc/pgx/v4"
 	"github.com/milgradesec/nbot/db"
 	"github.com/milgradesec/nbot/s3"
-	"github.com/minio/minio-go/v7"
-	"github.com/rs/zerolog/log"
 )
 
-func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+func GetRandom() (string, error) {
+	id, err := pickRandomID()
+	if err != nil {
+		return "", err
+	}
+	return generateURLFromID(id)
+}
+
+func GetByID(id string) (string, error) {
+	return generateURLFromID(id)
+}
+
+func generateURLFromID(id string) (string, error) {
+	key := "minitas/" + id
+	url, err := s3.PresignedURL(key)
+	if err != nil {
+		return "", err
+	}
+	return url, nil
+}
+
+/*func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) > 2 {
 		switch args[1] {
 		case "add":
@@ -39,7 +47,7 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, 
 			return
 		}
 
-		url, err := s3.GeneratePresignedURL("minitas/" + key)
+		url, err := s3.PresignedURL("minitas/" + key)
 		if err != nil {
 			log.Error().Err(err).Msg("failed to generate presigned")
 			return
@@ -51,9 +59,9 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, 
 			},
 		})
 	}
-}
+}*/
 
-func (bot *Bot) addMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+/*func (bot *Bot) addMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) <= 2 {
 		s.ChannelMessageSend(m.ChannelID, "Aprendete el comando: !minita add URL")
 		return
@@ -109,9 +117,9 @@ func (bot *Bot) addMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreat
 	}
 
 	s.ChannelMessageSend(m.ChannelID, "Nueva minita añadida correctamente.\nMinita ID: "+key)
-}
+}*/
 
-func (bot *Bot) deleteMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+/*func (bot *Bot) deleteMinitaHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) <= 2 {
 		s.ChannelMessageSend(m.ChannelID, "El comando es !minita delete MinitaID")
 		return
@@ -144,7 +152,7 @@ func (bot *Bot) deleteMinitaHandler(s *discordgo.Session, m *discordgo.MessageCr
 	s.ChannelMessageSend(m.ChannelID, "Minita eliminada correctamente.")
 }
 
-func (bot *Bot) minitaExists(id string) (bool, error) {
+func minitaExists(id string) (bool, error) {
 	var result int
 	err := db.Conn.QueryRow(context.Background(), `SELECT 1 FROM minitas WHERE id = $1`, id).Scan(&result)
 	if err != nil {
@@ -154,9 +162,9 @@ func (bot *Bot) minitaExists(id string) (bool, error) {
 		return false, fmt.Errorf("failed to handle db response: %w", err)
 	}
 	return true, nil
-}
+}*/
 
-func (bot *Bot) pickRandomMinitaID() (string, error) {
+func pickRandomID() (string, error) {
 	var id string
 	err := db.Conn.QueryRow(context.Background(), `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`).Scan(&id)
 	if err != nil {
@@ -165,7 +173,7 @@ func (bot *Bot) pickRandomMinitaID() (string, error) {
 	return id, nil
 }
 
-func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts minio.PutObjectOptions) error {
+/*func uploadMinitaIMG(key string, src io.Reader, size int64, opts minio.PutObjectOptions) error {
 	_, err := s3.Client.PutObject(context.Background(), "nbot", "minitas/"+key, src, size, opts)
 	if err != nil {
 		return err
@@ -173,7 +181,7 @@ func (bot *Bot) uploadMinitaIMG(key string, src io.Reader, size int64, opts mini
 	return nil
 }
 
-func (bot *Bot) insertMinitaID(id string) error {
+func insertMinitaID(id string) error {
 	rows, err := db.Conn.Query(context.Background(), `INSERT INTO minitas VALUES ($1)`, id)
 	if err != nil {
 		return err
@@ -186,7 +194,7 @@ func (bot *Bot) insertMinitaID(id string) error {
 	return nil
 }
 
-func (bot *Bot) deleteMinitaID(id string) error {
+func deleteMinitaID(id string) error {
 	result, err := db.Conn.Exec(context.Background(), `DELETE FROM minitas WHERE id = $1`, id)
 	if err != nil {
 		return err
@@ -198,7 +206,7 @@ func (bot *Bot) deleteMinitaID(id string) error {
 	return nil
 }
 
-func (bot *Bot) deleteMinitaIMG(key string) error {
+func deleteMinitaIMG(key string) error {
 	return s3.Client.RemoveObject(context.Background(), "nbot", "minitas/"+key, minio.RemoveObjectOptions{})
 }
 
@@ -236,4 +244,4 @@ func fetchImage(client *http.Client, url string) (*http.Response, error) {
 		return nil, errors.New("http status code != 200: " + resp.Status)
 	}
 	return resp, nil
-}
+}*/

@@ -21,7 +21,6 @@ type Bot struct {
 	Version string
 
 	s       *discordgo.Session
-	cmd     map[string]commandHandler
 	client  *http.Client
 	riotapi apiclient.Client
 }
@@ -31,14 +30,11 @@ func NewBot(token string, version string) (*Bot, error) {
 		Version: version,
 	}
 
-	session, err := discordgo.New("Bot " + token)
+	s, err := discordgo.New("Bot " + token)
 	if err != nil {
 		return nil, fmt.Errorf("error creating discord session: %w", err)
 	}
-	bot.s = session
-
-	bot.registerCommands()
-	session.AddHandler(bot.commandDispatcher)
+	bot.s = s
 
 	err = db.Open()
 	if err != nil {
@@ -63,15 +59,37 @@ func NewBot(token string, version string) (*Bot, error) {
 func (bot *Bot) Run() {
 	rand.Seed(time.Now().Unix())
 
+	bot.registerCommandHandlers()
+	bot.s.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
+			h(s, i)
+		}
+	})
+
 	if err := bot.s.Open(); err != nil {
-		log.Fatal().Err(err).Msgf("failed to create a websocket connection to Discord")
+		log.Fatal().Err(err).Msgf("Cannot establish a connection to Discord")
+	}
+	defer bot.s.Close()
+
+	registeredCommands := make([]*discordgo.ApplicationCommand, len(commands))
+	for i, v := range commands {
+		cmd, err := bot.s.ApplicationCommandCreate(bot.s.State.User.ID, "", v)
+		if err != nil {
+			log.Error().Err(err).Msgf("Cannot create '%v' command", v.Name)
+		}
+		registeredCommands[i] = cmd
 	}
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
-	bot.s.Close()
+	for _, v := range registeredCommands {
+		err := bot.s.ApplicationCommandDelete(bot.s.State.User.ID, "", v.ID)
+		if err != nil {
+			log.Error().Err(err).Msgf("Cannot delete '%v' command", v.Name)
+		}
+	}
 }
 
 const superUser = "MILGRADESEC"

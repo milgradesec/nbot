@@ -1,19 +1,13 @@
-package bot
+package league
 
 import (
-	"context"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
-	"time"
 
-	"github.com/bwmarrin/discordgo"
 	httpc "github.com/milgradesec/go-libs/http"
 	"github.com/rs/zerolog/log"
 	"github.com/yuhanfang/riot/apiclient"
-	"github.com/yuhanfang/riot/constants/region"
 	"github.com/yuhanfang/riot/ratelimit"
 )
 
@@ -37,7 +31,7 @@ func newRiotAPIClient() (apiclient.Client, error) {
 	return apiclient.New(apikey, httpc.NewHTTPClient(), ratelimit.NewLimiter()), nil
 }
 
-func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+/*func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	var name string
 
 	if len(args) == 1 {
@@ -76,7 +70,7 @@ func (bot *Bot) getLeagueElo(name string) (string, error) {
 		}
 	}
 	return "", nil
-}
+}*/
 
 const (
 	defaultSummonerName = "eLL humilde"
