@@ -1,21 +1,27 @@
 package league
 
 import (
+	"context"
 	"errors"
-	"io/ioutil"
+	"fmt"
 	"os"
 
 	httpc "github.com/milgradesec/go-libs/http"
 	"github.com/rs/zerolog/log"
 	"github.com/yuhanfang/riot/apiclient"
+	"github.com/yuhanfang/riot/constants/region"
 	"github.com/yuhanfang/riot/ratelimit"
 )
 
-func newRiotAPIClient() (apiclient.Client, error) {
+var (
+	Client apiclient.Client
+)
+
+func NewClient() (apiclient.Client, error) {
 	var apikey string
 	apikeyFile, found := os.LookupEnv("RIOT_APIKEY_FILE")
 	if found {
-		buf, err := ioutil.ReadFile(apikeyFile)
+		buf, err := os.ReadFile(apikeyFile)
 		if err != nil {
 			return nil, err
 		}
@@ -29,6 +35,27 @@ func newRiotAPIClient() (apiclient.Client, error) {
 	}
 
 	return apiclient.New(apikey, httpc.NewHTTPClient(), ratelimit.NewLimiter()), nil
+}
+
+func GetRankedSummary(ctx context.Context, name string) (string, error) {
+	summ, err := Client.GetBySummonerName(ctx, defaultRegion, name)
+	if err != nil {
+		return "", err
+	}
+
+	leagues, err := Client.GetAllLeaguePositionsForSummoner(ctx, defaultRegion, summ.ID)
+	if err != nil {
+		return "", err
+	}
+
+	for _, league := range leagues {
+		if league.QueueType == "RANKED_SOLO_5x5" {
+			wr := float64(league.Wins) / float64(league.Wins+league.Losses) * 100
+			return fmt.Sprintf("%s %s %s %d LPs -- %dW/%dL %.2f%% WR\n", name, league.Tier, league.Rank,
+				league.LeaguePoints, league.Wins, league.Losses, wr), nil
+		}
+	}
+	return "", nil
 }
 
 /*func (bot *Bot) eloHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
@@ -73,5 +100,5 @@ func (bot *Bot) getLeagueElo(name string) (string, error) {
 }*/
 
 const (
-	defaultSummonerName = "eLL humilde"
+	defaultRegion = region.EUW1
 )

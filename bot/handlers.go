@@ -2,8 +2,10 @@ package bot
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/milgradesec/nbot/bot/modules/league"
 	"github.com/milgradesec/nbot/bot/modules/minitas"
 	"github.com/milgradesec/nbot/bot/modules/quotes"
 	"github.com/milgradesec/nbot/storage"
@@ -17,6 +19,10 @@ func (bot *Bot) messageRespond(i *discordgo.InteractionCreate, msg string) {
 			Content: msg,
 		},
 	})
+}
+
+func (bot *Bot) messageErrorRespond(i *discordgo.InteractionCreate, err error) {
+	bot.messageRespond(i, fmt.Sprintf("❌ Se ha producido un error ==> %v", err))
 }
 
 func (bot *Bot) versionHandler(_ *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -96,12 +102,12 @@ func (bot *Bot) fraseHandler(_ *discordgo.Session, i *discordgo.InteractionCreat
 
 	if _, ok := optionMap["add"]; ok {
 		// log.Info().Msgf("Recibido comando /frase add %s", option.StringValue())
-		bot.messageRespond(i, "Este comando aun no esta implementado.")
+		bot.messageRespond(i, "Este comando no esta implementado.")
 		return
 	}
 
 	if _, ok := optionMap["del"]; ok {
-		bot.messageRespond(i, "Este comando aun no esta implementado.")
+		bot.messageRespond(i, "Este comando no esta implementado.")
 		return
 	}
 
@@ -111,7 +117,9 @@ func (bot *Bot) fraseHandler(_ *discordgo.Session, i *discordgo.InteractionCreat
 func (bot *Bot) minitaHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	url, err := minitas.GetRandom()
 	if err != nil {
-		log.Error().Err(err).Msg("failed to get a random minita")
+		log.Error().Err(err).Msg("failed to retrieve a random minita")
+		bot.messageErrorRespond(i, err)
+		return
 	}
 
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -126,4 +134,21 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 			},
 		},
 	})
+}
+
+func (bot *Bot) lolHandler(_ *discordgo.Session, i *discordgo.InteractionCreate) {
+	options := i.ApplicationCommandData().Options
+	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
+	for _, opt := range options {
+		optionMap[opt.Name] = opt
+	}
+
+	if opt, ok := optionMap["user"]; ok {
+		msg, err := league.GetRankedSummary(context.TODO(), opt.StringValue())
+		if err != nil {
+			bot.messageErrorRespond(i, err)
+			return
+		}
+		bot.messageRespond(i, msg)
+	}
 }

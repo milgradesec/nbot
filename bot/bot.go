@@ -2,27 +2,21 @@ package bot
 
 import (
 	"fmt"
-	"math/rand"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
+	"github.com/milgradesec/nbot/bot/modules/league"
 	"github.com/milgradesec/nbot/db"
 	"github.com/milgradesec/nbot/storage"
 	"github.com/rs/zerolog/log"
-	"github.com/yuhanfang/riot/apiclient"
 
 	"github.com/bwmarrin/discordgo"
 )
 
 type Bot struct {
 	Version string
-
 	s       *discordgo.Session
-	client  *http.Client
-	riotapi apiclient.Client
 }
 
 func NewBot(token string, version string) (*Bot, error) {
@@ -46,19 +40,15 @@ func NewBot(token string, version string) (*Bot, error) {
 		return nil, fmt.Errorf("failed to create s3 client: %w", err)
 	}
 
-	// bot.client = httpc.NewHTTPClient()
-
-	// bot.riotapi, err = newRiotAPIClient()
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to create riot api client: %w", err)
-	// }
+	league.Client, err = league.NewClient()
+	if err != nil {
+		return nil, fmt.Errorf("failed to create riot api client: %w", err)
+	}
 
 	return bot, nil
 }
 
 func (bot *Bot) Run() {
-	rand.Seed(time.Now().Unix())
-
 	bot.registerCommandHandlers()
 	bot.s.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
@@ -78,7 +68,7 @@ func (bot *Bot) Run() {
 			log.Error().Err(err).Msgf("Cannot create '%v' command", v.Name)
 		}
 
-		log.Info().Str("cmd", v.Name).Msg("Comando registrado correctamente")
+		log.Info().Msgf("Comando '%s' registrado correctamente", v.Name)
 		registeredCommands[i] = cmd
 	}
 
@@ -91,7 +81,7 @@ func (bot *Bot) Run() {
 		if err != nil {
 			log.Error().Err(err).Msgf("Cannot delete '%v' command", v.Name)
 		}
-		log.Info().Str("cmd", v.Name).Msg("Comando eliminado correctamente")
+		log.Info().Msgf("Comando '%s' eliminado correctamente", v.Name)
 	}
 }
 

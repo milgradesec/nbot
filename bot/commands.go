@@ -4,41 +4,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*func (bot *Bot) registerCommands() {
-	var commands = map[string]commandHandler{
-		"!version": func(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-			s.ChannelMessageSend(m.ChannelID, bot.Version)
-		},
-		"!ping": func(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-			s.ChannelMessageSend(m.ChannelID, "PONG!")
-		},
-		"!putero": bot.ptHandler,
-		"!nbot":   bot.quoteHandler,
-		"!frase":  bot.quoteHandler,
-		"!quote":  bot.quoteHandler,
-		"!frases": bot.quotesHandler,
-		"!gafas":  bot.gafasHandler,
-		"!elo":    bot.eloHandler,
-		"!minita": bot.minitaHandler,
-	}
-	bot.cmd = commands
-}
-
-func (bot *Bot) commandDispatcher(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if strings.HasPrefix(m.Message.Content, "!") {
-		args := strings.Split(m.Message.Content, " ")
-
-		handler, found := bot.cmd[args[0]]
-		if found {
-			handler(s, m, args)
-		}
-	}
-}*/
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
 var (
 	commands = []*discordgo.ApplicationCommand{
 		{
@@ -88,6 +53,19 @@ var (
 			Name:        "minita",
 			Description: "Te mando la foto de una minita",
 		},
+		{
+			Name:        "lol",
+			Description: "Muestra información de las rankeds de un usuario",
+			Options: []*discordgo.ApplicationCommandOption{
+
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "user",
+					Description: "Nombre del usuario en League of Leguends",
+					Required:    true,
+				},
+			},
+		},
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){}
@@ -100,4 +78,5 @@ func (bot *Bot) registerCommandHandlers() {
 	commandHandlers["putero"] = bot.puteroHandler
 	commandHandlers["frase"] = bot.fraseHandler
 	commandHandlers["minita"] = bot.minitaHandler
+	commandHandlers["lol"] = bot.lolHandler
 }

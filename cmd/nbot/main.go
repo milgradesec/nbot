@@ -1,10 +1,8 @@
 package main
 
 import (
-	"os"
 	"runtime"
 
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 
@@ -16,10 +14,7 @@ var (
 )
 
 func main() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
-
-	log.Info().Msgf("Nbot %s", Version)
-	log.Info().Msgf("%s/%s %s", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	log.Info().Msgf("Nbot %s -- %s/%s %s", Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
 
 	if !viper.IsSet("DISCORD_TOKEN") {
 		log.Fatal().Msg("NBOT_DISCORD_TOKEN not set")
