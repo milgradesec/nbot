@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/bwmarrin/discordgo v0.25.0
 	github.com/jackc/pgx/v4 v4.16.1
-	github.com/milgradesec/go-libs v0.0.0-20220425213745-f59aa77e7673
+	github.com/milgradesec/go-libs v0.0.0-20220701010932-cd9ffa5bd22e
 	github.com/minio/minio-go/v7 v7.0.34
 	github.com/rs/zerolog v1.27.0
 	github.com/spf13/viper v1.12.0

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/milgradesec/nbot/db"
-	"github.com/milgradesec/nbot/s3"
+	"github.com/milgradesec/nbot/storage"
 	"github.com/rs/zerolog/log"
 	"github.com/yuhanfang/riot/apiclient"
 
@@ -41,7 +41,7 @@ func NewBot(token string, version string) (*Bot, error) {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	s3.Client, err = s3.NewClient()
+	storage.Client, err = storage.NewClient()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create s3 client: %w", err)
 	}
@@ -77,6 +77,8 @@ func (bot *Bot) Run() {
 		if err != nil {
 			log.Error().Err(err).Msgf("Cannot create '%v' command", v.Name)
 		}
+
+		log.Info().Str("cmd", v.Name).Msg("Comando registrado correctamente")
 		registeredCommands[i] = cmd
 	}
 
@@ -89,6 +91,7 @@ func (bot *Bot) Run() {
 		if err != nil {
 			log.Error().Err(err).Msgf("Cannot delete '%v' command", v.Name)
 		}
+		log.Info().Str("cmd", v.Name).Msg("Comando eliminado correctamente")
 	}
 }
 

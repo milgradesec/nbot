@@ -20,7 +20,6 @@ func Open() error {
 		username string
 		password string
 		sslMode  string
-		//rootCA   string
 	)
 
 	if !viper.IsSet("POSTGRES_HOST") {
@@ -44,17 +43,12 @@ func Open() error {
 	password = viper.GetString("POSTGRES_DB_PASSWORD")
 
 	if !viper.IsSet("POSTGRES_SSL_MODE") {
-		sslMode = "verify-full"
+		sslMode = "require"
 	} else {
 		sslMode = viper.GetString("POSTGRES_SSL_MODE")
 	}
 
-	/*rootCA, found = os.LookupEnv("POSTGRES_SSL_ROOT_CERT")
-	if !found {
-		return nil, errors.New("POSTGRES_SSL_ROOT_CERT env variable not set")
-	}*/
-
-	connStr := "postgres://" + username + ":" + password + "@" + host + "/" + database + "?sslmode=" + sslMode // + "&sslrootcert=" + rootCA
+	connStr := "postgres://" + username + ":" + password + "@" + host + "/" + database + "?sslmode=" + sslMode
 	dbpool, err := pgxpool.Connect(context.Background(), connStr)
 	if err != nil {
 		return err

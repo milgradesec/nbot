@@ -2,57 +2,55 @@ package quotes
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/milgradesec/nbot/db"
 	"github.com/rs/zerolog/log"
 )
 
-/*func (bot *Bot) quoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-	if len(args) == 1 {
-		s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
+/*
+	func (bot *Bot) quoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+		if len(args) == 1 {
+			s.ChannelMessageSend(m.ChannelID, bot.getRandomQuote())
+		}
+
+		if len(args) > 2 {
+			bot.addQuoteHandler(s, m, args)
+		}
 	}
 
-	if len(args) > 2 {
-		bot.addQuoteHandler(s, m, args)
+	func (bot *Bot) addQuoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+		if m.Author.Username != superUser {
+			s.ChannelMessageSend(m.ChannelID, "Tu no tienes permiso para añadir nada. Putero.")
+			return
+		}
+
+		quote := strings.Join(args[2:], " ")
+		err := bot.insertNewQuote(quote)
+		if err != nil {
+			s.ChannelMessageSend(m.ChannelID, "Se ha producido un error al añadir la frase.")
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, "Frase añadida correctamente.")
 	}
-}
 
-func (bot *Bot) quotesHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-	s.ChannelMessageSend(m.ChannelID, bot.getAllQuotes())
-}
+	func (bot *Bot) insertNewQuote(quote string) error {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
-func (bot *Bot) addQuoteHandler(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-	if m.Author.Username != superUser {
-		s.ChannelMessageSend(m.ChannelID, "Tu no tienes permiso para añadir nada. Putero.")
-		return
+		rows, err := db.Conn.Query(ctx, `INSERT INTO quotes VALUES ($1)`, quote)
+		if err != nil {
+			return err
+		}
+		defer rows.Close()
+
+		if err := rows.Err(); err != nil {
+			return fmt.Errorf("failed to handle db response: %w", err)
+		}
+		return nil
 	}
-
-	quote := strings.Join(args[2:], " ")
-	err := bot.insertNewQuote(quote)
-	if err != nil {
-		s.ChannelMessageSend(m.ChannelID, "Se ha producido un error al añadir la frase.")
-		return
-	}
-	s.ChannelMessageSend(m.ChannelID, "Frase añadida correctamente.")
-}
-
-func (bot *Bot) insertNewQuote(quote string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	rows, err := db.Conn.Query(ctx, `INSERT INTO quotes VALUES ($1)`, quote)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-
-	if err := rows.Err(); err != nil {
-		return fmt.Errorf("failed to handle db response: %w", err)
-	}
-	return nil
-}
-
 */
 func GetRandom() string {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -92,4 +90,24 @@ func GetAll() string {
 		log.Error().Err(err).Msg("failed to handle db response")
 	}
 	return msg
+}
+
+func Insert(quote string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	rows, err := db.Conn.Query(ctx, `INSERT INTO quotes VALUES ($1)`, quote)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("failed to handle db response: %w", err)
+	}
+	return nil
+}
+
+func Delete() error {
+	return errors.New("not implemented yet")
 }

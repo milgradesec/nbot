@@ -1,4 +1,4 @@
-package s3
+package storage
 
 import (
 	"context"
@@ -13,9 +13,10 @@ import (
 )
 
 const (
-	defaultS3Endpoint = "s3.paesa.es"
-	defaultS3Region   = "eu-west-1"
-	bucketName        = "nbot"
+	defaultEndpoint   = "s3.paesa.es"
+	defaultRegion     = "eu-west-1"
+	defaultBucketName = "nbot"
+	defaultExpiration = time.Hour * 6
 )
 
 var Client *minio.Client
@@ -29,15 +30,15 @@ func NewClient() (*minio.Client, error) {
 	)
 
 	if !viper.IsSet("AWS_S3_ENDPOINT") {
-		log.Warn().Msg("AWS_S3_ENDPOINT not set, using default endpoint: '" + defaultS3Endpoint + "'")
-		endpoint = defaultS3Endpoint
+		log.Warn().Msg("AWS_S3_ENDPOINT not set, using default endpoint: '" + defaultEndpoint + "'")
+		endpoint = defaultEndpoint
 	} else {
 		endpoint = viper.GetString("AWS_S3_ENDPOINT")
 	}
 
 	if !viper.IsSet("AWS_DEFAULT_REGION") {
-		log.Warn().Msg("AWS_DEFAULT_REGION not set, using default region: '" + defaultS3Region + "'")
-		region = defaultS3Region
+		log.Warn().Msg("AWS_DEFAULT_REGION not set, using default region: '" + defaultRegion + "'")
+		region = defaultRegion
 	} else {
 		region = viper.GetString("AWS_DEFAULT_REGION")
 	}
@@ -63,10 +64,22 @@ func NewClient() (*minio.Client, error) {
 	return client, nil
 }
 
-func PresignedURL(objectKey string) (string, error) {
-	presignedURL, err := Client.PresignedGetObject(context.Background(), bucketName, objectKey, time.Hour*8, make(url.Values))
+func Get(ctx context.Context, objectName string) error {
+	return errors.New("not implemented")
+}
+
+func Put(ctx context.Context, objectName string) error {
+	return errors.New("not implemented")
+}
+
+func Delete(ctx context.Context, objectName string) error {
+	return errors.New("not implemented")
+}
+
+func PresignedGet(ctx context.Context, objectName string) (string, error) {
+	u, err := Client.PresignedGetObject(ctx, defaultBucketName, objectName, defaultExpiration, make(url.Values))
 	if err != nil {
 		return "", err
 	}
-	return presignedURL.String(), nil
+	return u.String(), nil
 }

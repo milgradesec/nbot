@@ -1,47 +1,42 @@
 package bot
 
 import (
+	"context"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/milgradesec/nbot/bot/modules/minitas"
 	"github.com/milgradesec/nbot/bot/modules/quotes"
-	"github.com/milgradesec/nbot/s3"
+	"github.com/milgradesec/nbot/storage"
 	"github.com/rs/zerolog/log"
 )
 
-func (bot *Bot) versionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+func (bot *Bot) messageRespond(i *discordgo.InteractionCreate, msg string) {
+	bot.s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: bot.Version,
+			Content: msg,
 		},
 	})
-	if err != nil {
-		log.Error().Err(err).Msg("failed to return response for command 'version'")
-	}
 }
 
-func (bot *Bot) pingHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: "PONG!",
-		},
-	})
-	if err != nil {
-		log.Error().Err(err).Msg("failed to return response for command 'ping'")
-	}
+func (bot *Bot) versionHandler(_ *discordgo.Session, i *discordgo.InteractionCreate) {
+	bot.messageRespond(i, bot.Version)
+}
+
+func (bot *Bot) pingHandler(_ *discordgo.Session, i *discordgo.InteractionCreate) {
+	bot.messageRespond(i, "PONG!")
 }
 
 func (bot *Bot) gafasHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	key := "img/congafas.webp"
-	congafas, err := s3.PresignedURL(key)
+	congafas, err := storage.PresignedGet(context.TODO(), key)
 	if err != nil {
 		log.Error().Err(err).Msgf("failed to generate presigned url for '%s'", key)
 		return
 	}
 
 	key = "img/singafas.webp"
-	singafas, err := s3.PresignedURL(key)
+	singafas, err := storage.PresignedGet(context.TODO(), key)
 	if err != nil {
 		log.Error().Err(err).Msgf("failed to generate presigned url for '%s'", key)
 		return
@@ -73,7 +68,7 @@ func (bot *Bot) gafasHandler(s *discordgo.Session, i *discordgo.InteractionCreat
 
 func (bot *Bot) puteroHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	key := "clips/putero.mp4"
-	url, err := s3.PresignedURL(key)
+	url, err := storage.PresignedGet(context.TODO(), key)
 	if err != nil {
 		log.Error().Err(err).Msgf("failed to generate presigned url for '%s'", key)
 		return
@@ -90,16 +85,27 @@ func (bot *Bot) puteroHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 	}
 }
 
-func (bot *Bot) fraseHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: quotes.GetRandom(),
-		},
-	})
-	if err != nil {
-		log.Error().Err(err).Msg("failed to return response for command 'frase'")
+func (bot *Bot) fraseHandler(_ *discordgo.Session, i *discordgo.InteractionCreate) {
+	options := i.ApplicationCommandData().Options
+
+	// Or convert the slice into a map
+	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
+	for _, opt := range options {
+		optionMap[opt.Name] = opt
 	}
+
+	if _, ok := optionMap["add"]; ok {
+		// log.Info().Msgf("Recibido comando /frase add %s", option.StringValue())
+		bot.messageRespond(i, "Este comando aun no esta implementado.")
+		return
+	}
+
+	if _, ok := optionMap["del"]; ok {
+		bot.messageRespond(i, "Este comando aun no esta implementado.")
+		return
+	}
+
+	bot.messageRespond(i, quotes.GetRandom())
 }
 
 func (bot *Bot) minitaHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -108,7 +114,7 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 		log.Error().Err(err).Msg("failed to get a random minita")
 	}
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Embeds: []*discordgo.MessageEmbed{
@@ -120,7 +126,4 @@ func (bot *Bot) minitaHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 			},
 		},
 	})
-	if err != nil {
-		log.Error().Err(err).Msg("failed to return response for command 'minita'")
-	}
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/milgradesec/nbot/db"
-	"github.com/milgradesec/nbot/s3"
+	"github.com/milgradesec/nbot/storage"
 )
 
 func GetRandom() (string, error) {
@@ -22,7 +22,7 @@ func GetByID(id string) (string, error) {
 
 func generateURLFromID(id string) (string, error) {
 	key := "minitas/" + id
-	url, err := s3.PresignedURL(key)
+	url, err := storage.PresignedGet(context.TODO(), key)
 	if err != nil {
 		return "", err
 	}

@@ -4,7 +4,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-type commandHandler func(s *discordgo.Session, m *discordgo.MessageCreate, args []string)
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*func (bot *Bot) registerCommands() {
 	var commands = map[string]commandHandler{
@@ -62,9 +62,25 @@ var (
 			Description: "Una frase aleatoria de L.L",
 			// Options: []*discordgo.ApplicationCommandOption{
 			// 	{
-			// 		Type:        discordgo.ApplicationCommandOptionString,
 			// 		Name:        "add",
-			// 		Description: "Añade una nueva frase",
+			// 		Description: "Añadir una frase",
+			// 		Type:        discordgo.ApplicationCommandOptionSubCommand,
+			// 		Options: []*discordgo.ApplicationCommandOption{
+
+			// 			{
+			// 				Name:        "frase",
+			// 				Description: "La frase en cuestion",
+			// 				Type:        discordgo.ApplicationCommandOptionString,
+			// 				Required:    true,
+			// 			},
+			// 		},
+			// 		Required: false,
+			// 	},
+			// 	{
+			// 		Name:        "del",
+			// 		Description: "Eliminar una frase",
+			// 		Type:        discordgo.ApplicationCommandOptionSubCommand,
+			// 		Required:    false,
 			// 	},
 			// },
 		},
