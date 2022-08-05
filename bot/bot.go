@@ -85,4 +85,4 @@ func (bot *Bot) Run() {
 	}
 }
 
-const superUser = "MILGRADESEC"
+// const superUser = "MILGRADESEC"
