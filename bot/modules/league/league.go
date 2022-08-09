@@ -4,13 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 
 	httpc "github.com/milgradesec/go-libs/http"
-	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 	"github.com/yuhanfang/riot/apiclient"
 	"github.com/yuhanfang/riot/constants/region"
 	"github.com/yuhanfang/riot/ratelimit"
+)
+
+const (
+	defaultRegion = region.EUW1
 )
 
 var (
@@ -18,23 +21,14 @@ var (
 )
 
 func NewClient() (apiclient.Client, error) {
-	var apikey string
-	apikeyFile, found := os.LookupEnv("RIOT_APIKEY_FILE")
-	if found {
-		buf, err := os.ReadFile(apikeyFile)
-		if err != nil {
-			return nil, err
-		}
-		apikey = string(buf)
-	} else {
-		apikey, found = os.LookupEnv("RIOT_APIKEY")
-		if !found {
-			return nil, errors.New("RIOT_APIKEY env variable not set")
-		}
-		log.Warn().Msg("Using unencrypted Riot API Key from env, consider switching to RIOT_APIKEY_FILE")
+	if !viper.IsSet("RIOT_API_KEY") {
+		return nil, errors.New("RIOT_API_KEY not set")
 	}
 
-	return apiclient.New(apikey, httpc.NewHTTPClient(), ratelimit.NewLimiter()), nil
+	return apiclient.New(
+		viper.GetString("RIOT_API_KEY"),
+		httpc.NewHTTPClient(),
+		ratelimit.NewLimiter()), nil
 }
 
 func GetRankedSummary(ctx context.Context, name string) (string, error) {
@@ -98,7 +92,3 @@ func (bot *Bot) getLeagueElo(name string) (string, error) {
 	}
 	return "", nil
 }*/
-
-const (
-	defaultRegion = region.EUW1
-)
