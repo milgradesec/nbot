@@ -7,7 +7,7 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/nbot/",
-      "envFile": "${workspaceFolder}/test/.env"
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }
