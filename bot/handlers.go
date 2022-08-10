@@ -93,15 +93,12 @@ func (bot *Bot) puteroHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 
 func (bot *Bot) fraseHandler(_ *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
-
-	// Or convert the slice into a map
 	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
 	for _, opt := range options {
 		optionMap[opt.Name] = opt
 	}
 
 	if _, ok := optionMap["add"]; ok {
-		// log.Info().Msgf("Recibido comando /frase add %s", option.StringValue())
 		bot.messageRespond(i, "Este comando no esta implementado.")
 		return
 	}
@@ -111,7 +108,7 @@ func (bot *Bot) fraseHandler(_ *discordgo.Session, i *discordgo.InteractionCreat
 		return
 	}
 
-	bot.messageRespond(i, quotes.GetRandom())
+	bot.messageRespond(i, quotes.GetRandom(context.TODO()))
 }
 
 func (bot *Bot) minitaHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
