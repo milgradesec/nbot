@@ -18,7 +18,8 @@ var (
 func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
 
-	log.Info().Msgf("Nbot %s -- %s/%s %s", Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
+	log.Info().Msgf("Nbot %s", Version)
+	log.Info().Msgf("GOOS: %s, GOARCH: %s, GOVersion: %s", runtime.GOOS, runtime.GOARCH, runtime.Version())
 
 	if !viper.IsSet("DISCORD_TOKEN") {
 		log.Fatal().Msg("NBOT_DISCORD_TOKEN not set")
