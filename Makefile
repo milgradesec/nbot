@@ -24,7 +24,7 @@ docker:
 release:
 	docker --log-level=debug buildx build . \
 		-f build.Dockerfile \
-		--platform linux/amd64, linux/arm64 \
+		--platform linux/amd64,linux/arm64 \
 		--tag ghcr.io/milgradesec/nbot:$(VERSION) \
 		--tag ghcr.io/milgradesec/nbot:latest \
 		--push
