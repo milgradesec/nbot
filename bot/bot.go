@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/milgradesec/nbot/bot/modules/league"
-	"github.com/milgradesec/nbot/db"
+	db "github.com/milgradesec/nbot/database"
 	"github.com/milgradesec/nbot/storage"
 	"github.com/rs/zerolog/log"
 

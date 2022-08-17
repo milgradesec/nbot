@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/milgradesec/nbot/db"
+	db "github.com/milgradesec/nbot/database"
 	"github.com/rs/zerolog/log"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/milgradesec/nbot/db"
+	db "github.com/milgradesec/nbot/database"
 	"github.com/milgradesec/nbot/storage"
 )
 
