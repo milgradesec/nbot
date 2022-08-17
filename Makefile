@@ -22,7 +22,8 @@ docker:
 	docker build . -f build.Dockerfile
 
 release:
-	docker buildx build . -f build.Dockerfile \
+	docker --log-level=debug buildx build . \
+		-f build.Dockerfile \
 		--platform linux/amd64, linux/arm64 \
 		--tag ghcr.io/milgradesec/nbot:$(VERSION) \
 		--tag ghcr.io/milgradesec/nbot:latest \
