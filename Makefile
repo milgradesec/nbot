@@ -1,5 +1,5 @@
 
-VERSION     :=  $(shell git describe --tags --always --dirty='-dev')
+VERSION     :=  $(shell git describe --tags --always --abbrev=0)
 SYSTEM      := 
 BUILDFLAGS  := -v -ldflags="-s -w -X main.Version=$(VERSION)"
 IMPORT_PATH := github.com/milgradesec/nbot
