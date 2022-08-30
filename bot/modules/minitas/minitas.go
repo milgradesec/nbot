@@ -10,6 +10,10 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
+func Get(ctx context.Context, id string) (string, error) {
+	return generateURLFromID(ctx, id)
+}
+
 func GetRandom(ctx context.Context) (string, error) {
 	id, err := pickRandomID(ctx)
 	if err != nil {
@@ -18,11 +22,7 @@ func GetRandom(ctx context.Context) (string, error) {
 	return generateURLFromID(ctx, id)
 }
 
-func GetByID(ctx context.Context, id string) (string, error) {
-	return generateURLFromID(ctx, id)
-}
-
-func DeleteByID(ctx context.Context, id string) error {
+func Delete(ctx context.Context, id string) error {
 	result, err := db.Conn.Exec(ctx, `DELETE FROM minitas WHERE id = $1`, id)
 	if err != nil {
 		return err
@@ -34,9 +34,12 @@ func DeleteByID(ctx context.Context, id string) error {
 	return storage.Client.RemoveObject(ctx, "nbot", "minitas/"+id, minio.RemoveObjectOptions{})
 }
 
+func Insert(ctx context.Context) error {
+	return errors.New("not implemented yet")
+}
+
 func generateURLFromID(ctx context.Context, id string) (string, error) {
-	key := "minitas/" + id
-	url, err := storage.PresignedGet(ctx, key)
+	url, err := storage.PresignedGet(ctx, "minitas/"+id)
 	if err != nil {
 		return "", err
 	}
