@@ -2,27 +2,41 @@ package minitas
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	db "github.com/milgradesec/nbot/database"
 	"github.com/milgradesec/nbot/storage"
+	"github.com/minio/minio-go/v7"
 )
 
-func GetRandom() (string, error) {
-	id, err := pickRandomID()
+func GetRandom(ctx context.Context) (string, error) {
+	id, err := pickRandomID(ctx)
 	if err != nil {
 		return "", err
 	}
-	return generateURLFromID(id)
+	return generateURLFromID(ctx, id)
 }
 
-func GetByID(id string) (string, error) {
-	return generateURLFromID(id)
+func GetByID(ctx context.Context, id string) (string, error) {
+	return generateURLFromID(ctx, id)
 }
 
-func generateURLFromID(id string) (string, error) {
+func DeleteByID(ctx context.Context, id string) error {
+	result, err := db.Conn.Exec(ctx, `DELETE FROM minitas WHERE id = $1`, id)
+	if err != nil {
+		return err
+	}
+
+	if rows := result.RowsAffected(); rows == 0 {
+		return errors.New("no rows affected")
+	}
+	return storage.Client.RemoveObject(ctx, "nbot", "minitas/"+id, minio.RemoveObjectOptions{})
+}
+
+func generateURLFromID(ctx context.Context, id string) (string, error) {
 	key := "minitas/" + id
-	url, err := storage.PresignedGet(context.TODO(), key)
+	url, err := storage.PresignedGet(ctx, key)
 	if err != nil {
 		return "", err
 	}
@@ -152,7 +166,7 @@ func generateURLFromID(id string) (string, error) {
 	s.ChannelMessageSend(m.ChannelID, "Minita eliminada correctamente.")
 }
 
-func minitaExists(id string) (bool, error) {
+func checkAlreadyExists(id string) (bool, error) {
 	var result int
 	err := db.Conn.QueryRow(context.Background(), `SELECT 1 FROM minitas WHERE id = $1`, id).Scan(&result)
 	if err != nil {
@@ -164,9 +178,9 @@ func minitaExists(id string) (bool, error) {
 	return true, nil
 }*/
 
-func pickRandomID() (string, error) {
+func pickRandomID(ctx context.Context) (string, error) {
 	var id string
-	err := db.Conn.QueryRow(context.Background(), `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`).Scan(&id)
+	err := db.Conn.QueryRow(ctx, `SELECT id FROM minitas ORDER BY RANDOM() LIMIT 1`).Scan(&id)
 	if err != nil {
 		return "", fmt.Errorf("failed to handle db response: %w", err)
 	}
@@ -192,22 +206,6 @@ func insertMinitaID(id string) error {
 		return fmt.Errorf("failed to handle db response: %w", err)
 	}
 	return nil
-}
-
-func deleteMinitaID(id string) error {
-	result, err := db.Conn.Exec(context.Background(), `DELETE FROM minitas WHERE id = $1`, id)
-	if err != nil {
-		return err
-	}
-
-	if rows := result.RowsAffected(); rows == 0 {
-		return errors.New("no rows affected")
-	}
-	return nil
-}
-
-func deleteMinitaIMG(key string) error {
-	return s3.Client.RemoveObject(context.Background(), "nbot", "minitas/"+key, minio.RemoveObjectOptions{})
 }
 
 func computeMD5(buf []byte) string {

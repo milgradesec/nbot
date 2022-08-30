@@ -112,7 +112,7 @@ func (bot *Bot) fraseHandler(_ *discordgo.Session, i *discordgo.InteractionCreat
 }
 
 func (bot *Bot) minitaHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	url, err := minitas.GetRandom()
+	url, err := minitas.GetRandom(context.TODO())
 	if err != nil {
 		log.Error().Err(err).Msg("failed to retrieve a random minita")
 		bot.messageErrorRespond(i, err)
