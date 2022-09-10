@@ -9,8 +9,6 @@ ENV GO111MODULE=on \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH}
 
-LABEL org.opencontainers.image.source="https://github.com/milgradesec/nbot"
-
 WORKDIR /go/src/app
 COPY . .
 
