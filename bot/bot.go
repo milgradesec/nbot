@@ -68,7 +68,6 @@ func (bot *Bot) Run() {
 			log.Error().Err(err).Msgf("Cannot create '%v' command", v.Name)
 		}
 
-		log.Info().Msgf("Comando '%s' registrado correctamente", v.Name)
 		registeredCommands[i] = cmd
 	}
 
@@ -81,8 +80,5 @@ func (bot *Bot) Run() {
 		if err != nil {
 			log.Error().Err(err).Msgf("Cannot delete '%v' command", v.Name)
 		}
-		log.Info().Msgf("Comando '%s' eliminado correctamente", v.Name)
 	}
 }
-
-// const superUser = "MILGRADESEC"
