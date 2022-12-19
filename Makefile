@@ -1,26 +1,33 @@
 
 VERSION     :=  $(shell git describe --tags --always --abbrev=0)
 SYSTEM      := 
-BUILDFLAGS  := -v -ldflags="-s -w -X main.Version=$(VERSION)"
+BUILDFLAGS  := -v -trimpath -ldflags="-s -w -X main.Version=$(VERSION)"
 IMPORT_PATH := github.com/milgradesec/nbot
+
+GOBIN := $(shell go env GOBIN)
+ifeq ($(GOBIN),)
+GOBIN = $(shell go env GOPATH)/bin
+endif
 
 all: build
 
+.PHONY: build
 build:
 	$(SYSTEM) go build $(BUILDFLAGS) $(IMPORT_PATH)/cmd/nbot
 
-clean:
-	go clean
+.PHONY: lint
+lint: $(GOBIN)/golangci-lint
+	$(GOBIN)/golangci-lint run
 
+.PHONY: test
 test:
-	go test ./...
+	go test -v ./...
 
-lint:
-	golangci-lint run
-
+.PHONY: docker
 docker:
 	docker build . -f build.Dockerfile
 
+.PHONY: release
 release:
 	docker --log-level=debug buildx build . \
 		-f build.Dockerfile \
