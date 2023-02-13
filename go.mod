@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.27.0
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/milgradesec/go-libs v0.0.0-20220701010932-cd9ffa5bd22e
-	github.com/minio/minio-go/v7 v7.0.47
+	github.com/minio/minio-go/v7 v7.0.48
 	github.com/rs/zerolog v1.29.0
 	github.com/spf13/viper v1.15.0
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
