@@ -236,6 +236,8 @@ github.com/mattn/go-isatty v0.0.14 h1:yVuAays6BHfxijgZPzw+3Zlu5yQgKGP2/hcQbHb7S9
 github.com/mattn/go-isatty v0.0.14/go.mod h1:7GGIvUiUoEMVVmxf/4nioHXj79iQHKdU27kJ6hsGG94=
 github.com/milgradesec/go-libs v0.0.0-20220701010932-cd9ffa5bd22e h1:REVEXuaeELBzBPB1gnVZIRBMlicoSw20TCM59XhfVUU=
 github.com/milgradesec/go-libs v0.0.0-20220701010932-cd9ffa5bd22e/go.mod h1:A6oJlLiKIyuj0k4Q8bwgMEpLntenS2e6j+kR3hC/5Wk=
+github.com/milgradesec/go-libs v0.0.0-20230315215902-c6414cf34efd h1:6aHO5i28BkWiuT3GDmQbb1BZtG+xBu3YfYkdwiImP5E=
+github.com/milgradesec/go-libs v0.0.0-20230315215902-c6414cf34efd/go.mod h1:A6oJlLiKIyuj0k4Q8bwgMEpLntenS2e6j+kR3hC/5Wk=
 github.com/minio/md5-simd v1.1.2 h1:Gdi1DZK69+ZVMoNHRXJyNcxrMA4dSxoYHZSQbirFg34=
 github.com/minio/md5-simd v1.1.2/go.mod h1:MzdKDxYpY2BT9XQFocsiZf/NKVtR7nkE4RoEpN+20RM=
 github.com/minio/minio-go/v7 v7.0.56 h1:pkZplIEHu8vinjkmhsexcXpWth2tjVLphrTZx6fBVZY=

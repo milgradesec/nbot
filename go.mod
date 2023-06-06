@@ -1,11 +1,11 @@
 module github.com/milgradesec/nbot
 
-go 1.18
+go 1.20
 
 require (
 	github.com/bwmarrin/discordgo v0.27.1
 	github.com/jackc/pgx/v4 v4.18.1
-	github.com/milgradesec/go-libs v0.0.0-20220701010932-cd9ffa5bd22e
+	github.com/milgradesec/go-libs v0.0.0-20230315215902-c6414cf34efd
 	github.com/minio/minio-go/v7 v7.0.56
 	github.com/rs/zerolog v1.29.1
 	github.com/spf13/viper v1.16.0
