@@ -234,14 +234,12 @@ github.com/mattn/go-isatty v0.0.7/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hd
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
 github.com/mattn/go-isatty v0.0.14 h1:yVuAays6BHfxijgZPzw+3Zlu5yQgKGP2/hcQbHb7S9Y=
 github.com/mattn/go-isatty v0.0.14/go.mod h1:7GGIvUiUoEMVVmxf/4nioHXj79iQHKdU27kJ6hsGG94=
-github.com/milgradesec/go-libs v0.0.0-20220701010932-cd9ffa5bd22e h1:REVEXuaeELBzBPB1gnVZIRBMlicoSw20TCM59XhfVUU=
-github.com/milgradesec/go-libs v0.0.0-20220701010932-cd9ffa5bd22e/go.mod h1:A6oJlLiKIyuj0k4Q8bwgMEpLntenS2e6j+kR3hC/5Wk=
 github.com/milgradesec/go-libs v0.0.0-20230315215902-c6414cf34efd h1:6aHO5i28BkWiuT3GDmQbb1BZtG+xBu3YfYkdwiImP5E=
 github.com/milgradesec/go-libs v0.0.0-20230315215902-c6414cf34efd/go.mod h1:A6oJlLiKIyuj0k4Q8bwgMEpLntenS2e6j+kR3hC/5Wk=
 github.com/minio/md5-simd v1.1.2 h1:Gdi1DZK69+ZVMoNHRXJyNcxrMA4dSxoYHZSQbirFg34=
 github.com/minio/md5-simd v1.1.2/go.mod h1:MzdKDxYpY2BT9XQFocsiZf/NKVtR7nkE4RoEpN+20RM=
-github.com/minio/minio-go/v7 v7.0.56 h1:pkZplIEHu8vinjkmhsexcXpWth2tjVLphrTZx6fBVZY=
-github.com/minio/minio-go/v7 v7.0.56/go.mod h1:NUDy4A4oXPq1l2yK6LTSvCEzAMeIcoz9lcj5dbzSrRE=
+github.com/minio/minio-go/v7 v7.0.57 h1:xsFiOiWjpC1XAGbFEUOzj1/gMXGz7ljfxifwcb/5YXU=
+github.com/minio/minio-go/v7 v7.0.57/go.mod h1:NUDy4A4oXPq1l2yK6LTSvCEzAMeIcoz9lcj5dbzSrRE=
 github.com/minio/sha256-simd v1.0.1 h1:6kaan5IFmwTNynnKKpDHe6FWHohJOHhCPchzK49dzMM=
 github.com/minio/sha256-simd v1.0.1/go.mod h1:Pz6AKMiUdngCLpeTL/RJY1M9rUuPMYujV5xJjtbRSN8=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
