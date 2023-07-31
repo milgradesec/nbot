@@ -7,7 +7,7 @@ require (
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/milgradesec/go-libs v0.0.0-20230315215902-c6414cf34efd
 	github.com/minio/minio-go/v7 v7.0.61
-	github.com/rs/zerolog v1.29.1
+	github.com/rs/zerolog v1.30.0
 	github.com/spf13/viper v1.16.0
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
 )
