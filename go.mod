@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/bwmarrin/discordgo v0.27.1
-	github.com/jackc/pgx/v4 v4.18.2
+	github.com/jackc/pgx/v4 v4.18.3
 	github.com/milgradesec/go-libs v0.0.0-20230315215902-c6414cf34efd
 	github.com/minio/minio-go/v7 v7.0.67
 	github.com/rs/zerolog v1.32.0
