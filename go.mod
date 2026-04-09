@@ -7,7 +7,7 @@ require (
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/milgradesec/go-libs v0.0.0-20230315215902-c6414cf34efd
 	github.com/minio/minio-go/v7 v7.0.100
-	github.com/rs/zerolog v1.34.0
+	github.com/rs/zerolog v1.35.0
 	github.com/spf13/viper v1.21.0
 	github.com/yuhanfang/riot v0.0.0-20191205014607-43dd1994728e
 )
@@ -30,8 +30,8 @@ require (
 	github.com/klauspost/compress v1.18.2 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.11 // indirect
 	github.com/klauspost/crc32 v1.3.0 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/minio/crc64nvme v1.1.1 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
